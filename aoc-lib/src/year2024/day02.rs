@@ -24,13 +24,13 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
     Ok(0)
 }
 
-fn to_reports(content: &str) -> Result<Vec<Vec<u8>>> {
-    let mut reports: Vec<Vec<u8>>= vec![];
+fn to_reports(content: &str) -> Result<Vec<Vec<i8>>> {
+    let mut reports: Vec<Vec<i8>>= vec![];
     for line in content.trim().lines() {
         let mut report = vec![];
         let mut parts = line.split_whitespace();
-        if let Some(value) = parts.next() {
-            report.push(value.parse::<u8>()?);
+        while let Some(value) = parts.next() {
+            report.push(value.parse::<i8>()?);
         }
         reports.push(report)
     }
@@ -40,7 +40,22 @@ fn to_reports(content: &str) -> Result<Vec<Vec<u8>>> {
 mod tests {
     use super::*;
 
-    const EXAMPLE: &str = "";
+    const EXAMPLE: &str = "7 6 4 2 1
+    1 2 7 8 9
+    9 7 6 2 1
+    1 3 2 4 5
+    8 6 4 4 1
+    1 3 6 7 9";
+
+    #[test]
+    fn test_parsing() {
+        let result = to_reports(EXAMPLE).unwrap();
+        assert_eq!(result[0][0], 7);
+        assert_eq!(result[1][1], 2);
+        assert_eq!(result[2][2], 6);
+        assert_eq!(result[3][3], 4);
+        assert_eq!(result[4][4], 1);
+    }
 
     #[test]
     fn test_part1() {
