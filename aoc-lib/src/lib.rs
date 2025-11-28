@@ -3,6 +3,7 @@ pub mod utils;
 // Year modules - add your years here as you implement them
 // Example: pub mod year2024;
 pub mod year2024;
+pub mod year2025;
 
 use anyhow::Result;
 
