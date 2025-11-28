@@ -17,7 +17,7 @@ enum Commands {
     Run {
         /// Year (e.g., 2024)
         year: u16,
-        /// Day (1-25)
+        /// Day (1-25) (or 1-12 for 2025 or later)
         day: u8,
     },
     /// List all available solutions
@@ -29,14 +29,14 @@ enum Commands {
     New {
         /// Year (e.g., 2024)
         year: u16,
-        /// Day (1-25)
+        /// Day (1-25) (or 1-12 for 2025 or later)
         day: u8,
     },
     /// Download input for a specific day (requires AOC_SESSION env var)
     Download {
         /// Year (e.g., 2024)
         year: u16,
-        /// Day (1-25)
+        /// Day (1-25) (or 1-12 for 2025 or later)
         day: u8,
     },
 }
@@ -53,6 +53,7 @@ fn main() -> Result<()> {
 }
 
 fn run_solution(year: u16, day: u8) -> Result<()> {
+    //todo update to account for new date range
     if !(1..=25).contains(&day) {
         anyhow::bail!("Day must be between 1 and 25");
     }
@@ -130,6 +131,7 @@ fn create_template(year: u16, day: u8) -> Result<()> {
 }
 
 fn download_input(year: u16, day: u8) -> Result<()> {
+    //todo update to consider new range
     if !(1..=25).contains(&day) {
         anyhow::bail!("Day must be between 1 and 25");
     }
