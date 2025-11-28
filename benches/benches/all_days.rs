@@ -1,5 +1,6 @@
+use std::hint::black_box;
 use aoc_lib::SolutionRegistry;
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
 
 fn bench_all_solutions(c: &mut Criterion) {
     // Benchmark all available years and days
