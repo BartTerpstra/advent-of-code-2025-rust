@@ -9,6 +9,7 @@ rust-version.workspace = true
 anyhow.workspace = true
 reqwest.workspace = true
 colored.workspace = true
+dotenv = "0.15.0"
 
 # Optional: Uncomment these as needed for your solutions
 # regex.workspace = true

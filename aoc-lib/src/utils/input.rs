@@ -1,5 +1,6 @@
 use anyhow::{Context, Result};
 use std::path::PathBuf;
+use dotenv::dotenv;
 
 /// Get the path to an input file for a specific year and day
 pub fn get_input_path(year: u16, day: u8) -> PathBuf {
@@ -22,6 +23,8 @@ pub fn load_input_lines(year: u16, day: u8) -> Result<Vec<String>> {
 /// Download input from Advent of Code website
 /// Requires AOC_SESSION environment variable to be set
 pub fn download_input(year: u16, day: u8) -> Result<String> {
+    dotenv().ok();
+
     let session = std::env::var("AOC_SESSION")
         .context("AOC_SESSION environment variable not set")?;
 
