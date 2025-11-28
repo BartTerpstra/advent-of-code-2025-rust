@@ -24,6 +24,18 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
     Ok(0)
 }
 
+fn to_reports(content: &str) -> Result<Vec<Vec<u8>>> {
+    let mut reports: Vec<Vec<u8>>= vec![];
+    for line in content.trim().lines() {
+        let mut report = vec![];
+        let mut parts = line.split_whitespace();
+        if let Some(value) = parts.next() {
+            report.push(value.parse::<u8>()?);
+        }
+        reports.push(report)
+    }
+    Ok(reports)
+}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -33,12 +45,12 @@ mod tests {
     #[test]
     fn test_part1() {
         let result = solve_part1(EXAMPLE).unwrap();
-        assert_eq!(result.to_string(), "0");
+        assert_eq!(result.to_string(), "269");
     }
 
     #[test]
     fn test_part2() {
         let result = solve_part2(EXAMPLE).unwrap();
-        assert_eq!(result.to_string(), "0");
+        assert_eq!(result.to_string(), "337");
     }
 }
