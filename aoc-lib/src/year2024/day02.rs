@@ -18,7 +18,7 @@ pub fn solve() -> Result<()> {
 fn solve_part1(_input: &Vec<Vec<i8>>) -> Result<impl std::fmt::Display> {
     let total = _input
         .iter()
-        .map(|x|strict_save_report(x,0))
+        .map(|x|strict_save_report(x))
         .map(|x|{println!("{:#?}", x);x})
         .map(|x|x.unwrap())
         .filter(|&x| x).count();
@@ -28,14 +28,14 @@ fn solve_part1(_input: &Vec<Vec<i8>>) -> Result<impl std::fmt::Display> {
 fn solve_part2(_input: &Vec<Vec<i8>>) -> Result<impl std::fmt::Display> {
     let total = _input
         .iter()
-        .map(|x|strict_save_report(x,1))
+        .map(|x|strict_save_report(x))
         .map(|x|{println!("{:#?}", x);x})
         .map(|x|x.unwrap())
         .filter(|&x| x).count();
     Ok(total.to_string())
 }
 
-fn strict_save_report(report: &Vec<i8>, depth:i8) -> Result<bool>{
+fn strict_save_report(report: &Vec<i8>) -> Result<bool>{
     anyhow::ensure!(report.len() > 2, "Report must have atleast 2 values!");
 
     if report[0] < report[1] {
@@ -44,16 +44,7 @@ fn strict_save_report(report: &Vec<i8>, depth:i8) -> Result<bool>{
             let diff =report[n] - report[n+1];
             //should be between -1 and -3 or return false
             if diff< -3 || -1<diff {
-                return if depth == 0 {
-                    Ok(false)
-                } else {
-                    let mut left = report.clone();
-                    let mut right = report.clone();
-                    left.remove(n);
-                    right.remove(n+1);
-                    Ok(strict_save_report(&left, depth - 1)? |
-                        strict_save_report(&right, depth - 1)?)
-                }
+                return Ok(false)
             }
         }
         return Ok(true);
@@ -63,20 +54,7 @@ fn strict_save_report(report: &Vec<i8>, depth:i8) -> Result<bool>{
             let diff = report[n] - report[n + 1];
             //should be between 1 and 3 or return false
             if diff < 1 || 3 < diff {
-                return if depth == 0 {
-                    Ok(false)
-                } else {
-                    return if depth == 0 {
-                        Ok(false)
-                    } else {
-                        let mut left = report.clone();
-                        let mut right = report.clone();
-                        left.remove(n);
-                        right.remove(n+1);
-                        Ok(strict_save_report(&left, depth - 1)? |
-                            strict_save_report(&right, depth - 1)?)
-                    }
-                }
+                return Ok(false)
             }
         }
        return Ok(true);
