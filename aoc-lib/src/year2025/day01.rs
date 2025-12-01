@@ -24,6 +24,7 @@ fn new()->Machine{
     Machine{position:50, zerocount:0}
 }
 
+#[derive(Clone)]
 struct Instruction {
     is_left: bool,
     value:u8,
@@ -35,7 +36,8 @@ fn is_left(c:char) ->bool{
 }
 
 fn to_instructions(file:&str) ->Vec<Instruction>{
-    let mut instructions: Vec<Instruction>= vec![];
+    let dummy = Instruction{is_left:false, value:0,zerocount_bonus:0};
+    let mut instructions: Vec<Instruction>= vec![dummy;1000];
     for line in file.trim().lines() {
         //assert len 2-3
         //assert format as (L|R)[0-9]{1,3}
