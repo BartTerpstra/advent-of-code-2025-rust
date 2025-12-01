@@ -23,8 +23,7 @@ impl SolutionRegistry {
     pub fn get_solver(year: u16, day: u8) -> Option<SolverFn> {
         match year {
             2024 => Self::get_year_solver(year2024::DAYS, day),
-            // Add more years here:
-            // 2025 => Self::get_year_solver(year2025::DAYS, day),
+            2025 => Self::get_year_solver(year2025::DAYS, day),
             _ => None,
         }
     }
