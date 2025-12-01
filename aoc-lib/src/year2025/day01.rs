@@ -3,9 +3,10 @@ use anyhow::Result;
 
 pub fn solve() -> Result<()> {
     let input = utils::load_input(2025, 1)?;
+    let instructions = to_instructions(&input);
 
-    let part1 = solve_part1(&input)?;
-    let part2 = solve_part2(&input)?;
+    let part1 = solve_part1(&instructions)?;
+    let part2 = solve_part2(&instructions)?;
 
     println!("Day 1 / Year 2025");
     println!("Part 1: {}", part1);
@@ -26,6 +27,7 @@ fn new()->Machine{
 struct Instruction {
     is_left: bool,
     value:u8,
+    zerocount_bonus:u8,
 }
 
 fn is_left(c:char) ->bool{
@@ -39,14 +41,14 @@ fn to_instructions(file:&str) ->Vec<Instruction>{
         let direction: char = line.chars().nth(0).unwrap();
         //assert all values between 0 and 999 < 1024 = u32
         let slice: u32 = (&line[1..]).parse::<u32>().unwrap();
+        let zerocount_bonus:u8 = (slice / 100) as u8;
         let value:u8 = (slice % 100) as u8;
-        instructions.push(Instruction { is_left: is_left(direction),value:value});
+        instructions.push(Instruction { is_left: is_left(direction),value:value, zerocount_bonus:zerocount_bonus});
     }
     return instructions;
 }
-fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
+fn solve_part1(instructions: &Vec<Instruction>) -> Result<u32> {
     let mut machine = new();
-    let instructions = to_instructions(_input);
     for instruction in instructions {
         if instruction.is_left {
             machine.position -= instruction.value as i32;
@@ -62,16 +64,55 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
         if machine.position == 0 {
             machine.zerocount += 1;
         }
-
-
     }
 
-    Ok(machine.zerocount.to_string())
+    Ok(machine.zerocount)
 }
 
-fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
-    // TODO: Implement part 2
-    Ok(0)
+fn solve_part2(instructions: &Vec<Instruction>) -> Result<u32> {
+    let mut machine = new();
+    let mut was_zero:bool = false;
+    for instruction in instructions {
+        println!("{:?}", machine);
+        println!("{:?}", instruction);
+        if instruction.is_left {
+            machine.position -= instruction.value as i32;
+            if machine.position < 0 {
+                machine.position = 100+machine.position;
+                if !was_zero {
+                    println!("hit");
+                    machine.zerocount += 1;
+                }
+            }else{
+                if machine.position == 0 {
+
+                    println!("hit");
+                    was_zero = true;
+                    machine.zerocount += 1;
+                }
+            }
+        }else{
+            machine.position += instruction.value as i32;
+            if machine.position > 99 {
+                machine.position -= 100;
+                if !was_zero {
+                    println!("hit");
+                    machine.zerocount += 1;
+                }
+            }else{
+                if machine.position == 0 {
+                    was_zero = true;
+                    println!("hit");
+                    machine.zerocount += 1;
+                }
+            }
+        }
+        was_zero = machine.position == 0;
+    }
+
+    let bonus =  instructions.iter().map(|x|->u32{x.zerocount_bonus as u32}).sum::<u32>();
+    println!("bonus: {}", bonus);
+    Ok(machine.zerocount +bonus)
 }
 
 #[cfg(test)]
@@ -91,13 +132,16 @@ L82";
 
     #[test]
     fn test_part1() {
-        let result = solve_part1(EXAMPLE).unwrap();
+        let instructions = to_instructions(EXAMPLE);
+        let result = solve_part1(&instructions).unwrap();
         assert_eq!(result.to_string(), "3");
     }
 
     #[test]
     fn test_part2() {
-        let result = solve_part2(EXAMPLE).unwrap();
+        let instructions = to_instructions(EXAMPLE);
+        let count =  solve_part1(&instructions).unwrap();
+        let result = solve_part2(&instructions).unwrap();
         assert_eq!(result.to_string(), "6");
     }
 }
