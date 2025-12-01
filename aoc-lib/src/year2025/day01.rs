@@ -15,15 +15,15 @@ pub fn solve() -> Result<()> {
     Ok(())
 }
 
-#[derive(Debug)]
 struct Machine{
     position: i32,
     zerocount: u32,
 }
+
 fn new()->Machine{
     Machine{position:50, zerocount:0}
 }
-#[derive(Debug)]
+
 struct Instruction {
     is_left: bool,
     value:u8,
@@ -73,20 +73,15 @@ fn solve_part2(instructions: &Vec<Instruction>) -> Result<u32> {
     let mut machine = new();
     let mut was_zero:bool = false;
     for instruction in instructions {
-        println!("{:?}", machine);
-        println!("{:?}", instruction);
         if instruction.is_left {
             machine.position -= instruction.value as i32;
             if machine.position < 0 {
                 machine.position = 100+machine.position;
                 if !was_zero {
-                    println!("hit");
                     machine.zerocount += 1;
                 }
             }else{
                 if machine.position == 0 {
-
-                    println!("hit");
                     was_zero = true;
                     machine.zerocount += 1;
                 }
@@ -96,13 +91,10 @@ fn solve_part2(instructions: &Vec<Instruction>) -> Result<u32> {
             if machine.position > 99 {
                 machine.position -= 100;
                 if !was_zero {
-                    println!("hit");
                     machine.zerocount += 1;
                 }
             }else{
                 if machine.position == 0 {
-                    was_zero = true;
-                    println!("hit");
                     machine.zerocount += 1;
                 }
             }
@@ -111,7 +103,6 @@ fn solve_part2(instructions: &Vec<Instruction>) -> Result<u32> {
     }
 
     let bonus =  instructions.iter().map(|x|->u32{x.zerocount_bonus as u32}).sum::<u32>();
-    println!("bonus: {}", bonus);
     Ok(machine.zerocount +bonus)
 }
 
@@ -140,7 +131,6 @@ L82";
     #[test]
     fn test_part2() {
         let instructions = to_instructions(EXAMPLE);
-        let count =  solve_part1(&instructions).unwrap();
         let result = solve_part2(&instructions).unwrap();
         assert_eq!(result.to_string(), "6");
     }
