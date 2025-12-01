@@ -38,12 +38,15 @@ fn to_instructions(file:&str) ->Vec<Instruction>{
     let mut instructions: Vec<Instruction>= vec![];
     for line in file.trim().lines() {
         //assert len 2-3
+        //assert format as (L|R)[0-9]{1,3}
         let direction: char = line.chars().nth(0).unwrap();
         //assert all values between 0 and 999 < 1024 < u16
         let slice: u16 = (&line[1..]).parse::<u16>().unwrap();
-        let zerocount_bonus:u8 = (slice / 100) as u8;
-        let value:u8 = (slice % 100) as u8;
-        instructions.push(Instruction { is_left: is_left(direction),value:value, zerocount_bonus:zerocount_bonus});
+
+        //the idea is to do division and remainder before we store the data, so we save processing and memory.
+        let zerocount_bonus:u8 = (slice / 100) as u8; //999/100 <= 9 <= 256
+        let value:u8 = (slice % 100) as u8; //n%100 <= 100 <= 256
+        instructions.push(Instruction { is_left: is_left(direction),value, zerocount_bonus });
     }
     return instructions;
 }
