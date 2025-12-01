@@ -39,8 +39,8 @@ fn to_instructions(file:&str) ->Vec<Instruction>{
     for line in file.trim().lines() {
         //assert len 2-3
         let direction: char = line.chars().nth(0).unwrap();
-        //assert all values between 0 and 999 < 1024 = u32
-        let slice: u32 = (&line[1..]).parse::<u32>().unwrap();
+        //assert all values between 0 and 999 < 1024 < u16
+        let slice: u16 = (&line[1..]).parse::<u16>().unwrap();
         let zerocount_bonus:u8 = (slice / 100) as u8;
         let value:u8 = (slice % 100) as u8;
         instructions.push(Instruction { is_left: is_left(direction),value:value, zerocount_bonus:zerocount_bonus});
