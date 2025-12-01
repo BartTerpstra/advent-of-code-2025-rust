@@ -38,18 +38,18 @@ impl SolutionRegistry {
     /// List all available years
     pub fn available_years() -> Vec<u16> {
         vec![
-            2024,
+            //2024,
             // Add more years here as you implement them:
-            // 2025,
+            2025,
         ]
     }
 
     /// List all available days for a year
     pub fn available_days(year: u16) -> Vec<u8> {
         let days = match year {
-            2024 => &year2024::DAYS,
+            //2024 => &year2024::DAYS,
             // Add more years here:
-            // 2025 => &year2025::DAYS,
+            2025 => &year2025::DAYS,
             _ => return vec![],
         };
 
