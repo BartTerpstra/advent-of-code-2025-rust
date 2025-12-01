@@ -98,6 +98,6 @@ L82";
     #[test]
     fn test_part2() {
         let result = solve_part2(EXAMPLE).unwrap();
-        assert_eq!(result.to_string(), "0");
+        assert_eq!(result.to_string(), "6");
     }
 }
