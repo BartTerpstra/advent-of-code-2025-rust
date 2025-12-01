@@ -16,7 +16,7 @@ pub fn solve() -> Result<()> {
 }
 
 struct Machine{
-    position: i32,
+    position: i16, //u8*2 <= u16. value always set to 0..99 before addition/subtraction. 99<u8 meaning i16 is sufficient
     zerocount: u32,
 }
 
@@ -51,12 +51,12 @@ fn solve_part1(instructions: &Vec<Instruction>) -> Result<u32> {
     let mut machine = new();
     for instruction in instructions {
         if instruction.is_left {
-            machine.position -= instruction.value as i32;
+            machine.position -= instruction.value as i16;
             if machine.position < 0 {
                 machine.position = 100+machine.position;
             }
         }else{
-            machine.position += instruction.value as i32;
+            machine.position += instruction.value as i16;
             if machine.position > 99 {
                 machine.position -= 100
             }
@@ -74,7 +74,7 @@ fn solve_part2(instructions: &Vec<Instruction>) -> Result<u32> {
     let mut was_zero:bool = false;
     for instruction in instructions {
         if instruction.is_left {
-            machine.position -= instruction.value as i32;
+            machine.position -= instruction.value as i16;
             if machine.position < 0 {
                 machine.position = 100+machine.position;
                 if !was_zero {
@@ -87,7 +87,7 @@ fn solve_part2(instructions: &Vec<Instruction>) -> Result<u32> {
                 }
             }
         }else{
-            machine.position += instruction.value as i32;
+            machine.position += instruction.value as i16;
             if machine.position > 99 {
                 machine.position -= 100;
                 if !was_zero {
