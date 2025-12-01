@@ -82,7 +82,6 @@ fn solve_part2(instructions: &Vec<Instruction>) -> Result<u32> {
                 }
             }else{
                 if machine.position == 0 {
-                    was_zero = true;
                     machine.zerocount += 1;
                 }
             }
