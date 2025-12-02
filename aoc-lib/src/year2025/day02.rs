@@ -73,39 +73,25 @@ fn check_three (i:u64) -> u64{
 }
 fn check_four(i: u64) -> u64{
     //two and four
-    let twos =  check_two(i);
-    if twos != 0 {return twos}
+    let l = i - (i /100)*100;
+    let r = i/100;
+    if  l == r{return i}
 
-    return check_equal_digits(i);
+    0
 }
 
 fn check_six(i:u64) -> u64{
-    //check two (11(11)11)
-    let l = check_two(i - i /100);
-    let r = check_two(i/100);
-    if  (l!= 0 && r != 0 && l == r){return i}
+    let l = i - (i /1000)*1000;
+    let r = i/1000;
+    if  l == r{return i}
 
-    //check three(111)(111)
-    let l = check_three(i - i /1000);
-    let r = check_three(i/1000);
-    if (l!= 0 && r != 0 && l == r){return i}
-
-    //check six
-    //redundant by calling three twice
     0
 }
 fn check_eight(i:u64) -> u64{
-    //check four
-    let first_four = i/10000; //remove least 4 significant digits
-    let last_four = i - first_four*10000;//remove 4 most significant digits
-    let l = check_four(first_four);
-    let r = check_four(last_four);
-    if (l!= 0 && r != 0 && l == r){
-        return i;
-    }
+    let l = i - (i /10000)*10000;
+    let r = i/10000;
+    if  l == r{return i}
 
-    //check eight
-    //redundant by combining 2 four calls.
     0
 }
 fn check_nine(i:u64) -> u64{
@@ -118,21 +104,25 @@ fn check_nine(i:u64) -> u64{
     0
 }
 fn check_ten(i:u64) -> u64{
-    //check 2
-    let five = i/100000000; //first two digits
-    let four = (i - (five * 100000000)) / 1000000;
-    let three = (i - (four * 1000000)- (five * 100000000)) / 10000;
-    let two = (i - (three * 10000)- (four * 1000000)- (five * 100000000)) / 100;
-    let one = (i - (two * 100)- (three * 10000)- (four * 1000000)- (five * 100000000)) / 1;
-
-    //commutative
-    if five==one && one ==two && two == three && four == three{return i}
+    // //check 2
+    // let five = i/100000000; //first two digits
+    // let four = (i - (five * 100000000)) / 1000000;
+    // let three = (i - (four * 1000000)- (five * 100000000)) / 10000;
+    // let two = (i - (three * 10000)- (four * 1000000)- (five * 100000000)) / 100;
+    // let one = (i - (two * 100)- (three * 10000)- (four * 1000000)- (five * 100000000)) / 1;
+    //
+    // //commutative
+    // if five==one && one ==two && two == three && four == three{return i}
 
     //check 5
-    //redundant
+    let left = i - (i /100000)*100000;
+    let right = i/100000;
+
+    if (left == right) {return i;}
 
     //check 10
-    check_equal_digits(i)
+    //redundant
+    0
 }
 
 
@@ -144,27 +134,52 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     //sort
     // collapse? are we expecting overlapping ranges? (+count collapses for fun).
     let mut sum:u128 = 0;
-
-    //option a: brute force
     for range in &ranges {
         for i in range.lower..=range.upper {
             let addition = match i {
-                0        ..=9 => 0,
-                11|22|33|44|55|66|77|88|99 => i,
-                111|222|333|444|555|666|777|888|999 => i,
-                1010     ..=9999 => check_four(i),
-                11111|22222|33333|44444|55555|66666|77777|88888|99999 => i,
-                100000   ..=999999 => check_six(i),
-                1111111|2222222|3333333|4444444|5555555|6666666|7777777|8888888|9999999 => i,
-                10000000  ..=99999999 => check_eight(i),
-                100000000 ..=999999999 => check_nine(i),
+                0..=9 => 0,
+                11 | 22 | 33 | 44 | 55 | 66 | 77 | 88 | 99 => i,
+                100..=999 => 0,
+                1000..=9999 => check_four(i),
+                10000..=99999 => 0,
+                100000..=999999 => check_six(i),
+                1000000..=9999999 => 0,
+                10000000..=99999999 => check_eight(i),
+                100000000..=999999999 => 0,
                 1000000000..=9999999999 => check_ten(i),
                 _ => 0,
             };
+            if addition != 0 {
+                println!("addition: {}", addition);
+            }
 
-            sum+=addition as u128;
+            sum += addition as u128;
         }
     }
+
+    //only twice :)
+    // //option a: brute force
+    // for range in &ranges {
+    //     for i in range.lower..=range.upper {
+    //         let addition = match i {
+    //             0        ..=9 => 0,
+    //             11|22|33|44|55|66|77|88|99 => i,
+    //             111|222|333|444|555|666|777|888|999 => i,
+    //             1010     ..=9999 => check_four(i),
+    //             11111|22222|33333|44444|55555|66666|77777|88888|99999 => i,
+    //             100000   ..=999999 => check_six(i),
+    //             1111111|2222222|3333333|4444444|5555555|6666666|7777777|8888888|9999999 => i,
+    //             10000000  ..=99999999 => check_eight(i),
+    //             100000000 ..=999999999 => check_nine(i),
+    //             1000000000..=9999999999 => check_ten(i),
+    //             _ => 0,
+    //         };
+    //         if addition !=0 {
+    //             println!("addition: {}", addition);
+    //         }
+    //
+    //         sum+=addition as u128;
+
 
     //option b: generators and cutters
     //divisors of digit count are the target repetition lengths
