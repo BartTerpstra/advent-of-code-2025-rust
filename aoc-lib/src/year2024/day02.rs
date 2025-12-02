@@ -18,7 +18,7 @@ pub fn solve() -> Result<()> {
 fn solve_part1(_input: &Vec<Vec<i8>>) -> Result<impl std::fmt::Display> {
     let total = _input
         .iter()
-        .map(|x|strict_save_report(x))
+        .map(|x: &Vec<i8>| strict_save_report(x))
         .map(|x|{println!("{:#?}", x);x})
         .map(|x|x.unwrap())
         .filter(|&x| x).count();
@@ -28,22 +28,22 @@ fn solve_part1(_input: &Vec<Vec<i8>>) -> Result<impl std::fmt::Display> {
 fn solve_part2(_input: &Vec<Vec<i8>>) -> Result<impl std::fmt::Display> {
     let total = _input
         .iter()
-        .map(|x|strict_save_report(x))
+        .map(|x: &Vec<i8>| strict_save_report(x))
         .map(|x|{println!("{:#?}", x);x})
         .map(|x|x.unwrap())
         .filter(|&x| x).count();
     Ok(total.to_string())
 }
 
-fn strict_save_report(report: &Vec<i8>) -> Result<bool>{
+fn strict_save_report(report: &[i8]) -> Result<bool>{
     anyhow::ensure!(report.len() > 2, "Report must have atleast 2 values!");
 
     if report[0] < report[1] {
         //ascending
         for n in 0..report.len()-1{
             let diff =report[n] - report[n+1];
-            //should be between -1 and -3 or return false
-            if diff< -3 || -1<diff {
+            //if not be between -1 and -3 inclusive, return false
+            if !(-3..=-1).contains(&diff) {
                 return Ok(false)
             }
         }
@@ -52,8 +52,8 @@ fn strict_save_report(report: &Vec<i8>) -> Result<bool>{
         //descending
         for n in 0..report.len()-1 {
             let diff = report[n] - report[n + 1];
-            //should be between 1 and 3 or return false
-            if diff < 1 || 3 < diff {
+            //if not between 1 and 3 inclusive, return false
+            if !(1..=3).contains(&diff) {
                 return Ok(false)
             }
         }
@@ -66,8 +66,8 @@ fn to_reports(content: &str) -> Result<Vec<Vec<i8>>> {
     let mut reports: Vec<Vec<i8>>= vec![];
     for line in content.trim().lines() {
         let mut report = vec![];
-        let mut parts = line.split_whitespace();
-        while let Some(value) = parts.next() {
+        let parts = line.split_whitespace();
+        for value in parts {
             report.push(value.parse::<i8>()?);
         }
         reports.push(report)

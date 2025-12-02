@@ -42,7 +42,7 @@ fn as_range_list(file: &str)->Vec<Range> {
         let upper = parts.next().unwrap().parse::<u64>().unwrap();
         ranges.push(Range{lower, upper});
     }
-    return ranges
+    ranges
 }
 
 fn check_equal_digits(i: u64)->u64 {
