@@ -36,6 +36,51 @@ fn as_range_list(file: &str)->Vec<Range> {
     return ranges
 }
 
+fn check_equal_digits(i: u64, length:u8, target: u64)->u64 {
+    if length == 1 {
+        if i == target {
+            return i
+        } else {
+            return 0
+        }
+    }
+
+}
+fn check_four(i: u64) -> u64{
+    //two and four
+    let first_two = i/100;
+    let last_two = i - i*100;
+    if (first_two == last_two){
+        return i;
+    }
+
+    return check_equal_digits(&first_two, 4);
+}
+
+fn check_six(i:u64) -> u64{
+    //check two
+    //check three
+    //check six
+    0
+}
+fn check_eight(i:u64) -> u64{
+    //check four
+    //check eight
+    0
+}
+fn check_nine(i:u64) -> u64{
+    //check three
+    //check nine
+    0
+}
+fn check_ten(i:u64) -> u64{
+    //check 2
+    //check 5
+    //check 10
+    0
+}
+
+
 fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     // TODO: Implement part 1
     //assert smaller than 11 digits, < u64
@@ -44,8 +89,28 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     //split every range that crosses 10^n such that every range has 1 uniform digit length
     //sort
     // collapse? are we expecting overlapping ranges? (+count collapses for fun).
+    let mut sum:u128 = 0;
 
     //option a: brute force
+    for range in &ranges {
+        for i in range.lower..=range.upper {
+            let addition = match i {
+                0        ..=9 => 0,
+                11|22|33|44|55|66|77|88|99 => i,
+                111|222|333|444|555|666|777|888|999 => i,
+                1010     ..=9999 => 0,
+                11111|22222|33333|44444|55555|66666|77777|88888|99999 => i,
+                100000   ..=999999 => 0,
+                1111111|2222222|3333333|4444444|5555555|6666666|7777777|8888888|9999999 => i,
+                10000000  ..=99999999 => 0,
+                100000000 ..=999999999 => 0,
+                1000000000..=9999999999 => 0,
+                _ => 0,
+            };
+
+            sum+=addition as u128;
+        }
+    }
 
     //option b: generators and cutters
     //divisors of digit count are the target repetition lengths
@@ -60,20 +125,19 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
 
     //optim a: generate compiletime table of all combinations
 
-    let mut sum:u128 = 0;
     //note, this outline is wrong. we want to segment range list into 10 pieces and go by it piece by piece
-    for x in 1..=10u32 {
-        let divisors = Factorization::run(x);
-        let mut inter = divisors.factors;
-        inter.push(1);
-        let to_check = inter;
-        for range in &ranges {
-            for x in &to_check {
-                let found_values = vec![0u64];
-                sum += found_values.iter().map(|x|*x as u128).sum::<u128>();
-            }
-        }
-    }
+    // for x in 1..=10u32 {
+    //     let divisors = Factorization::run(x);
+    //     let mut inter = divisors.factors;
+    //     inter.push(1);
+    //     let to_check = inter;
+    //     for range in &ranges {
+    //         for x in &to_check {
+    //             let found_values = vec![0u64];
+    //             sum += found_values.iter().map(|x|*x as u128).sum::<u128>();
+    //         }
+    //     }
+    // }
     Ok(sum.to_string())
 }
 
