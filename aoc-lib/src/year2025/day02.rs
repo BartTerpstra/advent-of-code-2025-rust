@@ -28,7 +28,6 @@ fn as_range_list(file: &str)->Vec<Range> {
     let mut ranges = vec![];
     for range in file.trim().split(',') {
         let mut parts = range.split('-');
-        println!("{}", range);
 
         let lower = parts.next().unwrap().parse::<u64>().unwrap();
         let upper = parts.next().unwrap().parse::<u64>().unwrap();
@@ -54,9 +53,8 @@ fn check_equal_digits(i: u64)->u64 {
     }
 }
 
-fn check_pair(i:u64, digits:u64)->u64{
-
-    let divisor = 10_u32.pow(digits as u32) as u64;
+fn is_equal_half(i:u64, digits:u64) ->u64{
+    let divisor = 10_u64.pow(digits as u32);
 
     let first_half = i/divisor; //remove least 2 significant digits
     let last_half = i - (i/divisor) *divisor; //remove 2 most significant digits
@@ -66,53 +64,18 @@ fn check_pair(i:u64, digits:u64)->u64{
     0
 }
 
-//this is secretly check four, but don't mind it
-fn check_two (i:u64) -> u64{
-    let first_two = i - (i/100)*100; //remove least 2 significant digits
-    let last_two = i - first_two*100; //remove 2 most significant digits
-    if (first_two == last_two){
-        return i;
-    }
-    0
-}
-
-fn check_three (i:u64) -> u64{
-    let first_three = i/1000; //remove least 3 significant digits
-    let last_three = i - first_three*1000; //remove 3 most significant digits
-    if (first_three == last_three){
-        return i;
-    }
-    0
-}
-fn check_four(i: u64) -> u64{
-    //two and four
-    let l = check_pair(i, 4);
-    let r = check_pair(i, 4);
-    if  l == r{return i}
-
-    0
-}
-
-fn check_six(i:u64) -> u64{
+fn check_six_digits(i:u64) -> u64{
     let first = i/10000;
     let last = i - (i /100)*100;
     let middle = (i - first *10000 - last)/100;
     if first == middle && middle == last {return i}
 
     //twos and half
-    let l = i - (i /1000)*1000;
-    let r = i/1000;
-    if  l == r{return i}
-
-    0
+    is_equal_half(i, 6/2)
 }
 fn check_eight(i:u64) -> u64{
-    //2s and half
-    let l = i - (i /10000)*10000;
-    let r = i/10000;
-    if  l == r{return i}
-
-    0
+    //all divisions by four also create a division by two
+    is_equal_half(i, 8/2)
 }
 fn check_nine(i:u64) -> u64{
     //threes and half
@@ -136,17 +99,16 @@ fn check_ten(i:u64) -> u64{
     if five==one && one ==two && two == three && four == three{return i}
 
     //check 5
-    check_pair(i,5)
+    is_equal_half(i, 5)
 }
 
 
 fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     //assert smaller than 11 digits, < u64
+    //assert no overlapping ranges
     let ranges = as_range_list(_input);
 
-    //split every range that crosses 10^n such that every range has 1 uniform digit length
-    //sort
-    // collapse? are we expecting overlapping ranges? (+count collapses for fun).
+    //todo sort and split every range that crosses 10^n such that every range has 1 uniform digit length
     let mut sum:u128 = 0;
     for range in &ranges {
         for i in range.lower..=range.upper {
@@ -154,13 +116,13 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
                 0..=9 => 0,
                 11 | 22 | 33 | 44 | 55 | 66 | 77 | 88 | 99 => i,
                 100..=999 => 0,
-                1000..=9999 => check_pair(i,2),
+                1000..=9999 => is_equal_half(i, 2),
                 10000..=99999 => 0,
-                100000..=999999 => check_pair(i,3),
+                100000..=999999 => is_equal_half(i, 3),
                 1000000..=9999999 => 0,
-                10000000..=99999999 => check_pair(i,4),
+                10000000..=99999999 => is_equal_half(i, 4),
                 100000000..=999999999 => 0,
-                1000000000..=9999999999 => check_pair(i,5),
+                1000000000..=9999999999 => is_equal_half(i, 5),
                 _ => 0,
             };
 
@@ -210,9 +172,9 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
                 0..=9 => 0,
                 11 | 22 | 33 | 44 | 55 | 66 | 77 | 88 | 99 => i,
                 111 | 222 | 333 | 444 | 555 | 666 | 777 | 888 | 999 => i,
-                1010..=9999 => check_pair(i, 4/2),
+                1010..=9999 => is_equal_half(i, 4/2),
                 11111 | 22222 | 33333 | 44444 | 55555 | 66666 | 77777 | 88888 | 99999 => i,
-                100000..=999999 => check_six(i),
+                100000..=999999 => check_six_digits(i),
                 1111111 | 2222222 | 3333333 | 4444444 | 5555555 | 6666666 | 7777777 | 8888888 | 9999999 => i,
                 10000000..=99999999 => check_eight(i),
                 100000000..=999999999 => check_nine(i),
