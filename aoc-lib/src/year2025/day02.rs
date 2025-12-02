@@ -52,38 +52,71 @@ fn check_equal_digits(i: u64)->u64 {
         _ => 0,
     }
 }
-fn check_four(i: u64) -> u64{
-    //two and four
-    let first_two = i/100;
-    let last_two = i - i*100;
+
+//this is secretly check four, but don't mind it
+fn check_two (i:u64) -> u64{
+    let first_two = i/100; //remove least 2 significant digits
+    let last_two = i - first_two*100; //remove 2 most significant digits
     if (first_two == last_two){
         return i;
     }
+    0
+}
 
-    return check_equal_digits(&first_two);
+fn check_three (i:u64) -> u64{
+    let first_three = i/1000; //remove least 3 significant digits
+    let last_three = i - first_three*1000; //remove 3 most significant digits
+    if (first_three == last_three){
+        return i;
+    }
+    0
+}
+fn check_four(i: u64) -> u64{
+    //two and four
+    let twos =  check_two(i);
+    if twos != 0 {return twos}
+
+    return check_equal_digits(i);
 }
 
 fn check_six(i:u64) -> u64{
-    //check two
-    //check three
+    //check two (11(11)11)
+    let left = check_two(i - i /100);
+    let right = check_two(i/100);
+    if left == right {return i}
+
+    //check three(111)(111)
+    //todo merge
+    return check_three(i);
+
     //check six
+    //redundant by calling three twice
     0
 }
 fn check_eight(i:u64) -> u64{
     //check four
+    let first_four = i/10000; //remove least 4 significant digits
+    let last_four = i - first_four*10000;//remove 4 most significant digits
+    let l = check_four(first_four);
+    let r = check_four(last_four);
+    if (l!= 0 && r != 0 && l == r){
+        return i;
+    }
+
     //check eight
+    //redundant by combining 2 four calls.
     0
 }
 fn check_nine(i:u64) -> u64{
     //check three
     //check nine
-    0
+    check_equal_digits(i)
 }
 fn check_ten(i:u64) -> u64{
     //check 2
     //check 5
     //check 10
-    0
+    check_equal_digits(i)
 }
 
 
