@@ -1,7 +1,16 @@
-use std::num;
 use crate::utils;
 use anyhow::Result;
-use prime_factorization::Factorization;
+
+//todo optim a: generate compiletime table of all combinations
+//todo sort and split every range that crosses 10^n such that every range has 1 uniform digit length
+//there is something fancy you can do where you construct every combination using just the upper and lower bound where you don't iterate every value between
+//but where instead you construct every digit through addition and multiplication
+//which should be faster than going over every digit and doing multiple divisions.
+//the code as it is, is faster than I expected, which could either be because of a small data set or the compiler saving me from myself
+//use prime_factorization::Factorization;
+
+//I went with a brute force approach that was quite fragile at first because I didn't feel good today
+//and didn't get enough sleep
 
 pub fn solve() -> Result<()> {
     let input = utils::load_input(2025, 2)?;
@@ -56,8 +65,10 @@ fn check_equal_digits(i: u64)->u64 {
 fn is_equal_half(i:u64, digits:u64) ->u64{
     let divisor = 10_u64.pow(digits as u32);
 
-    let first_half = i/divisor; //remove least 2 significant digits
-    let last_half = i - (i/divisor) *divisor; //remove 2 most significant digits
+    //the following block exploits the fact that integer division rounds down,
+    //allowing you to erase digits you push past the comma
+    let first_half = i/divisor;
+    let last_half = i - (i/divisor) *divisor;
     if (first_half == last_half){
         return i;
     }
@@ -65,20 +76,22 @@ fn is_equal_half(i:u64, digits:u64) ->u64{
 }
 
 fn check_six_digits(i:u64) -> u64{
+    //division by 3
     let first = i/10000;
     let last = i - (i /100)*100;
     let middle = (i - first *10000 - last)/100;
     if first == middle && middle == last {return i}
 
-    //twos and half
+    //division by two
     is_equal_half(i, 6/2)
 }
 fn check_eight(i:u64) -> u64{
+    //division by 2 and four
     //all divisions by four also create a division by two
     is_equal_half(i, 8/2)
 }
 fn check_nine(i:u64) -> u64{
-    //threes and half
+    //division by 3
     let first = i/1000000;
     let last = i - (i /1000)*1000;
     let middle = (i - first *1000000 - last)/1000;
@@ -88,7 +101,7 @@ fn check_nine(i:u64) -> u64{
     0
 }
 fn check_ten(i:u64) -> u64{
-    // 2s, and half
+    // division by five
     let five = i/100000000; //first two digits
     let four = (i - (five * 100000000)) / 1000000;
     let three = (i - (four * 1000000)- (five * 100000000)) / 10000;
@@ -98,7 +111,7 @@ fn check_ten(i:u64) -> u64{
     //commutative
     if five==one && one ==two && two == three && four == three{return i}
 
-    //check 5
+    //division by 2
     is_equal_half(i, 5)
 }
 
@@ -108,7 +121,6 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     //assert no overlapping ranges
     let ranges = as_range_list(_input);
 
-    //todo sort and split every range that crosses 10^n such that every range has 1 uniform digit length
     let mut sum:u128 = 0;
     for range in &ranges {
         for i in range.lower..=range.upper {
@@ -130,42 +142,12 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
         }
     }
 
-
-
-
-    //option b: generators and cutters
-    //divisors of digit count are the target repetition lengths
-    //i.e. 10 has 2,5 and 1, not 3.
-    //the n significant digits repeated, where n is a repetition length, can be the bounds
-    //for every range length 1..=10
-        //get prime divors
-        //for every range
-            //for every prime divisor
-                //generate list given bounds and primacy
-                //sum+=list.sum()
-
-    //optim a: generate compiletime table of all combinations
-
-    //note, this outline is wrong. we want to segment range list into 10 pieces and go by it piece by piece
-    // for x in 1..=10u32 {
-    //     let divisors = Factorization::run(x);
-    //     let mut inter = divisors.factors;
-    //     inter.push(1);
-    //     let to_check = inter;
-    //     for range in &ranges {
-    //         for x in &to_check {
-    //             let found_values = vec![0u64];
-    //             sum += found_values.iter().map(|x|*x as u128).sum::<u128>();
-    //         }
-    //     }
-    // }
     Ok(sum.to_string())
 }
 
 fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
     let ranges = as_range_list(_input);
     let mut sum:u128 = 0;
-    //option a: brute force
     for range in &ranges {
         for i in range.lower..=range.upper {
             let addition = match i {
