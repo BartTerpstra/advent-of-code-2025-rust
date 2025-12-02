@@ -69,7 +69,7 @@ fn is_equal_half(i:u64, digits:u64) ->u64{
     //allowing you to erase digits you push past the comma
     let first_half = i/divisor;
     let last_half = i - (i/divisor) *divisor;
-    if (first_half == last_half){
+    if first_half == last_half{
         return i;
     }
     0
