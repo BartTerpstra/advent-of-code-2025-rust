@@ -17,3 +17,4 @@ dotenv = "0.15.0"
 # atoi.workspace = true
 # itertools.workspace = true
 # once_cell.workspace = true
+prime_factorization.workspace = true

@@ -1,5 +1,6 @@
 use crate::utils;
 use anyhow::Result;
+use prime_factorization::Factorization;
 
 pub fn solve() -> Result<()> {
     let input = utils::load_input(2025, 2)?;
@@ -13,6 +14,8 @@ pub fn solve() -> Result<()> {
 
     Ok(())
 }
+
+
 
 #[derive(Debug)]
 struct Range{
@@ -56,6 +59,9 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
                 //sum+=list.sum()
 
     //optim a: generate compiletime table of all combinations
+    for x in 0..=10u32 {
+        let divisors = Factorization::run(x);
+    }
     Ok(0)
 }
 
