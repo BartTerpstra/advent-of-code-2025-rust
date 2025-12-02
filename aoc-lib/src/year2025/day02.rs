@@ -17,6 +17,25 @@ pub fn solve() -> Result<()> {
 fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     // TODO: Implement part 1
     //assert smaller than 10 digits, < u64
+
+    //to range list() parser
+    //split every range that crosses 10^n such that every range has 1 uniform digit length
+    //sort
+    // collapse? are we expecting overlapping ranges? (+count collapses for fun).
+
+    //option a: brute force
+
+    //option b: generators and cutters
+    //divisors of digit count are the target repetition lengths
+    //i.e. 10 has 2,5 and 1, not 3.
+    //the n significant digits repeated, where n is a repetition length, can be the bounds
+    //for every range length 0..=10
+        //get prime divors
+        //for every range
+            //for every prime divisor
+                //generate list given bounds and primacy
+                //sum+=list.sum()
+
     Ok(0)
 }
 
