@@ -51,7 +51,7 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     //divisors of digit count are the target repetition lengths
     //i.e. 10 has 2,5 and 1, not 3.
     //the n significant digits repeated, where n is a repetition length, can be the bounds
-    //for every range length 0..=10
+    //for every range length 1..=10
         //get prime divors
         //for every range
             //for every prime divisor
@@ -59,8 +59,19 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
                 //sum+=list.sum()
 
     //optim a: generate compiletime table of all combinations
-    for x in 0..=10u32 {
+
+    let mut sum:u128 = 0;
+    for x in 1..=10u32 {
         let divisors = Factorization::run(x);
+        let mut inter = divisors.factors;
+        inter.push(1);
+        let to_check = inter;
+        for range in &ranges {
+            for x in &to_check {
+                let found_values = vec![0u64];
+                sum += found_values.iter().map(|x|*x as u128).sum::<u128>();
+            }
+        }
     }
     Ok(0)
 }
