@@ -86,14 +86,20 @@ fn check_three (i:u64) -> u64{
 }
 fn check_four(i: u64) -> u64{
     //two and four
-    let l = i - (i /100)*100;
-    let r = i/100;
+    let l = check_pair(i, 4);
+    let r = check_pair(i, 4);
     if  l == r{return i}
 
     0
 }
 
 fn check_six(i:u64) -> u64{
+    let first = i/10000;
+    let last = i - (i /100)*100;
+    let middle = (i - first *10000 - last)/100;
+    if first == middle && middle == last {return i}
+
+    //twos and half
     let l = i - (i /1000)*1000;
     let r = i/1000;
     if  l == r{return i}
@@ -101,6 +107,7 @@ fn check_six(i:u64) -> u64{
     0
 }
 fn check_eight(i:u64) -> u64{
+    //2s and half
     let l = i - (i /10000)*10000;
     let r = i/10000;
     if  l == r{return i}
@@ -108,34 +115,28 @@ fn check_eight(i:u64) -> u64{
     0
 }
 fn check_nine(i:u64) -> u64{
-    //check three(111(111)111)
-    let l = check_three(i - i /1000);
-    let r = check_three(i/1000);
-    if  (l!= 0 && r != 0 && l == r){return i}
-    //check nine
-    //redundant
+    //threes and half
+    let first = i/1000000;
+    let last = i - (i /1000)*1000;
+    let middle = (i - first *1000000 - last)/1000;
+
+    if first == middle && middle == last {return i}
+
     0
 }
 fn check_ten(i:u64) -> u64{
-    // //check 2
-    // let five = i/100000000; //first two digits
-    // let four = (i - (five * 100000000)) / 1000000;
-    // let three = (i - (four * 1000000)- (five * 100000000)) / 10000;
-    // let two = (i - (three * 10000)- (four * 1000000)- (five * 100000000)) / 100;
-    // let one = (i - (two * 100)- (three * 10000)- (four * 1000000)- (five * 100000000)) / 1;
-    //
-    // //commutative
-    // if five==one && one ==two && two == three && four == three{return i}
+    // 2s, and half
+    let five = i/100000000; //first two digits
+    let four = (i - (five * 100000000)) / 1000000;
+    let three = (i - (four * 1000000)- (five * 100000000)) / 10000;
+    let two = (i - (three * 10000)- (four * 1000000)- (five * 100000000)) / 100;
+    let one = (i - (two * 100)- (three * 10000)- (four * 1000000)- (five * 100000000)) / 1;
+
+    //commutative
+    if five==one && one ==two && two == three && four == three{return i}
 
     //check 5
-    let left = i - (i /100000)*100000;
-    let right = i/100000;
-
-    if (left == right) {return i;}
-
-    //check 10
-    //redundant
-    0
+    check_pair(i,5)
 }
 
 
@@ -162,9 +163,6 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
                 1000000000..=9999999999 => check_pair(i,5),
                 _ => 0,
             };
-            if addition != 0 {
-                println!("addition: {}", addition);
-            }
 
             sum += addition as u128;
         }
@@ -212,7 +210,7 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
                 0..=9 => 0,
                 11 | 22 | 33 | 44 | 55 | 66 | 77 | 88 | 99 => i,
                 111 | 222 | 333 | 444 | 555 | 666 | 777 | 888 | 999 => i,
-                1010..=9999 => check_four(i),
+                1010..=9999 => check_pair(i, 4/2),
                 11111 | 22222 | 33333 | 44444 | 55555 | 66666 | 77777 | 88888 | 99999 => i,
                 100000..=999999 => check_six(i),
                 1111111 | 2222222 | 3333333 | 4444444 | 5555555 | 6666666 | 7777777 | 8888888 | 9999999 => i,
@@ -221,9 +219,6 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
                 1000000000..=9999999999 => check_ten(i),
                 _ => 0,
             };
-            if addition != 0 {
-                println!("addition: {}", addition);
-            }
 
             sum += addition as u128;
         }
