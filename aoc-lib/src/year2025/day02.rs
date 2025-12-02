@@ -36,6 +36,7 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
                 //generate list given bounds and primacy
                 //sum+=list.sum()
 
+    //optim a: generate compiletime table of all combinations
     Ok(0)
 }
 
