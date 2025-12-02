@@ -14,11 +14,30 @@ pub fn solve() -> Result<()> {
     Ok(())
 }
 
+#[derive(Debug)]
+struct Range{
+    lower: u64,
+    upper: u64
+}
+fn as_range_list(file: &str)->Vec<Range> {
+    //assert no invalid data
+    let mut ranges = vec![];
+    for range in file.trim().split(',') {
+        let mut parts = range.split('-');
+        println!("{}", range);
+
+        let lower = parts.next().unwrap().parse::<u64>().unwrap();
+        let upper = parts.next().unwrap().parse::<u64>().unwrap();
+        ranges.push(Range{lower, upper});
+    }
+    return ranges
+}
+
 fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     // TODO: Implement part 1
-    //assert smaller than 10 digits, < u64
+    //assert smaller than 11 digits, < u64
+    let ranges = as_range_list(_input);
 
-    //to range list() parser
     //split every range that crosses 10^n such that every range has 1 uniform digit length
     //sort
     // collapse? are we expecting overlapping ranges? (+count collapses for fun).
@@ -49,9 +68,14 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
 mod tests {
     use super::*;
 
-    const EXAMPLE: &str = "11-22,95-115,998-1012,1188511880-1188511890,222220-222224,
-1698522-1698528,446443-446449,38593856-38593862,565653-565659,
-824824821-824824827,2121212118-2121212124";
+    const EXAMPLE: &str = "11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124";
+
+
+    #[test]
+    fn parser() {
+        let result = as_range_list(EXAMPLE);
+        println!("{:?}",result)
+    }
 
     #[test]
     fn test_part1() {
