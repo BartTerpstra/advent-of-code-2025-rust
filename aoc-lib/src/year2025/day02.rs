@@ -81,13 +81,14 @@ fn check_four(i: u64) -> u64{
 
 fn check_six(i:u64) -> u64{
     //check two (11(11)11)
-    let left = check_two(i - i /100);
-    let right = check_two(i/100);
-    if left == right {return i}
+    let l = check_two(i - i /100);
+    let r = check_two(i/100);
+    if  (l!= 0 && r != 0 && l == r){return i}
 
     //check three(111)(111)
-    //todo merge
-    return check_three(i);
+    let l = check_three(i - i /1000);
+    let r = check_three(i/1000);
+    if (l!= 0 && r != 0 && l == r){return i}
 
     //check six
     //redundant by calling three twice
@@ -108,13 +109,28 @@ fn check_eight(i:u64) -> u64{
     0
 }
 fn check_nine(i:u64) -> u64{
-    //check three
+    //check three(111(111)111)
+    let l = check_three(i - i /1000);
+    let r = check_three(i/1000);
+    if  (l!= 0 && r != 0 && l == r){return i}
     //check nine
-    check_equal_digits(i)
+    //redundant
+    0
 }
 fn check_ten(i:u64) -> u64{
     //check 2
+    let five = i/100000000; //first two digits
+    let four = (i - (five * 100000000)) / 1000000;
+    let three = (i - (four * 1000000)- (five * 100000000)) / 10000;
+    let two = (i - (three * 10000)- (four * 1000000)- (five * 100000000)) / 100;
+    let one = (i - (two * 100)- (three * 10000)- (four * 1000000)- (five * 100000000)) / 1;
+
+    //commutative
+    if five==one && one ==two && two == three && four == three{return i}
+
     //check 5
+    //redundant
+
     //check 10
     check_equal_digits(i)
 }
@@ -200,6 +216,7 @@ mod tests {
     #[test]
     fn test_part1() {
         let result = solve_part1(EXAMPLE).unwrap();
+        //too high
         assert_eq!(result.to_string(), "1227775554");
     }
 
