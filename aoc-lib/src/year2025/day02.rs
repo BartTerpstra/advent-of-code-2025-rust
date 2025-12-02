@@ -1,0 +1,47 @@
+use crate::utils;
+use anyhow::Result;
+
+pub fn solve() -> Result<()> {
+    let input = utils::load_input(2025, 2)?;
+
+    let part1 = solve_part1(&input)?;
+    let part2 = solve_part2(&input)?;
+
+    println!("Day 2 / Year 2025");
+    println!("Part 1: {}", part1);
+    println!("Part 2: {}", part2);
+
+    Ok(())
+}
+
+fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
+    // TODO: Implement part 1
+    //assert smaller than 10 digits, < u64
+    Ok(0)
+}
+
+fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
+    // TODO: Implement part 2
+    Ok(0)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EXAMPLE: &str = "11-22,95-115,998-1012,1188511880-1188511890,222220-222224,
+1698522-1698528,446443-446449,38593856-38593862,565653-565659,
+824824821-824824827,2121212118-2121212124";
+
+    #[test]
+    fn test_part1() {
+        let result = solve_part1(EXAMPLE).unwrap();
+        assert_eq!(result.to_string(), "1227775554");
+    }
+
+    #[test]
+    fn test_part2() {
+        let result = solve_part2(EXAMPLE).unwrap();
+        assert_eq!(result.to_string(), "0");
+    }
+}
