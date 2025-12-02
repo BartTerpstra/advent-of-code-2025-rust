@@ -1,3 +1,4 @@
+use std::num;
 use crate::utils;
 use anyhow::Result;
 use prime_factorization::Factorization;
@@ -53,9 +54,21 @@ fn check_equal_digits(i: u64)->u64 {
     }
 }
 
+fn check_pair(i:u64, digits:u64)->u64{
+
+    let divisor = 10_u32.pow(digits as u32) as u64;
+
+    let first_half = i/divisor; //remove least 2 significant digits
+    let last_half = i - (i/divisor) *divisor; //remove 2 most significant digits
+    if (first_half == last_half){
+        return i;
+    }
+    0
+}
+
 //this is secretly check four, but don't mind it
 fn check_two (i:u64) -> u64{
-    let first_two = i/100; //remove least 2 significant digits
+    let first_two = i - (i/100)*100; //remove least 2 significant digits
     let last_two = i - first_two*100; //remove 2 most significant digits
     if (first_two == last_two){
         return i;
@@ -140,13 +153,13 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
                 0..=9 => 0,
                 11 | 22 | 33 | 44 | 55 | 66 | 77 | 88 | 99 => i,
                 100..=999 => 0,
-                1000..=9999 => check_four(i),
+                1000..=9999 => check_pair(i,2),
                 10000..=99999 => 0,
-                100000..=999999 => check_six(i),
+                100000..=999999 => check_pair(i,3),
                 1000000..=9999999 => 0,
-                10000000..=99999999 => check_eight(i),
+                10000000..=99999999 => check_pair(i,4),
                 100000000..=999999999 => 0,
-                1000000000..=9999999999 => check_ten(i),
+                1000000000..=9999999999 => check_pair(i,5),
                 _ => 0,
             };
             if addition != 0 {
@@ -157,28 +170,7 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
         }
     }
 
-    //only twice :)
-    // //option a: brute force
-    // for range in &ranges {
-    //     for i in range.lower..=range.upper {
-    //         let addition = match i {
-    //             0        ..=9 => 0,
-    //             11|22|33|44|55|66|77|88|99 => i,
-    //             111|222|333|444|555|666|777|888|999 => i,
-    //             1010     ..=9999 => check_four(i),
-    //             11111|22222|33333|44444|55555|66666|77777|88888|99999 => i,
-    //             100000   ..=999999 => check_six(i),
-    //             1111111|2222222|3333333|4444444|5555555|6666666|7777777|8888888|9999999 => i,
-    //             10000000  ..=99999999 => check_eight(i),
-    //             100000000 ..=999999999 => check_nine(i),
-    //             1000000000..=9999999999 => check_ten(i),
-    //             _ => 0,
-    //         };
-    //         if addition !=0 {
-    //             println!("addition: {}", addition);
-    //         }
-    //
-    //         sum+=addition as u128;
+
 
 
     //option b: generators and cutters
@@ -211,8 +203,32 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
 }
 
 fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
-    // TODO: Implement part 2
-    Ok(0)
+    let ranges = as_range_list(_input);
+    let mut sum:u128 = 0;
+    //option a: brute force
+    for range in &ranges {
+        for i in range.lower..=range.upper {
+            let addition = match i {
+                0..=9 => 0,
+                11 | 22 | 33 | 44 | 55 | 66 | 77 | 88 | 99 => i,
+                111 | 222 | 333 | 444 | 555 | 666 | 777 | 888 | 999 => i,
+                1010..=9999 => check_four(i),
+                11111 | 22222 | 33333 | 44444 | 55555 | 66666 | 77777 | 88888 | 99999 => i,
+                100000..=999999 => check_six(i),
+                1111111 | 2222222 | 3333333 | 4444444 | 5555555 | 6666666 | 7777777 | 8888888 | 9999999 => i,
+                10000000..=99999999 => check_eight(i),
+                100000000..=999999999 => check_nine(i),
+                1000000000..=9999999999 => check_ten(i),
+                _ => 0,
+            };
+            if addition != 0 {
+                println!("addition: {}", addition);
+            }
+
+            sum += addition as u128;
+        }
+    }
+    Ok(sum.to_string())
 }
 
 #[cfg(test)]
