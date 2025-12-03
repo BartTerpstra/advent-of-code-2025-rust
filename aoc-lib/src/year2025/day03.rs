@@ -33,7 +33,7 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
         //assert highest is never allowed to be the last index (14)
         //assert indexes are not allowed to be equal
         let mut index_of_highest = 0;
-        let mut index_of_second_highest = 9999999;
+        let mut index_of_second_highest;
         for i in 1..bank.len()-1{ //last index is not allowed!
             //assert the following absolute ordering for chars: 0<1<2<3<4<5<6<7<8<9
             if bank[index_of_highest] < bank[i]{
@@ -68,11 +68,51 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
 }
 
 fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
-    // TODO: Implement part 2
-    Ok(0)
+    let banks = as_banks(_input);
+    let mut sum=0;
+    let digits = 12;
+    for bank in banks {
+        let mut highest_indices = vec![0;digits];
+        for digit in 0..digits {
+            //assert highest is never allowed to be the last index (14)
+            //assert indexes are not allowed to be equal
+            let start = highest_indices[digit];
+            let digits_needed_after = digits-(digit+1);
+            //e.g. 100 - 11
+            let end = bank.len() - digits_needed_after;
+
+            for i in start..end{ //indexes before or after current not allowed
+                //assert the following absolute ordering for chars: 0<1<2<3<4<5<6<7<8<9
+                if bank[highest_indices[digit]] < bank[i] || (i==highest_indices[digit]){
+                    highest_indices[digit] = i;
+                    if bank[highest_indices[digit]] == '9'{
+                        if(digit+1 != digits) {
+                            highest_indices[digit + 1] = highest_indices[digit] + 1;
+                        }
+                        break;
+                    }
+                }
+            }
+            if(digit+1 != digits) {
+                highest_indices[digit + 1] = highest_indices[digit] + 1;
+            }
+        }
+        let mut inner:u64 = 0;
+        highest_indices.reverse();
+        //the first index should be multipled by 10^size, not the last.
+        //assert max is summing 200 12 digit numbers < 50 bits < u64
+        for x in 0..highest_indices.len(){
+            //brother... why in the world am i casting this much? am i doing it wrong?
+            inner += (bank[highest_indices[x]].to_digit(10).unwrap() as u64) * 10u64.pow(x as u32)
+        }
+        println!("sum{}", inner);
+        sum+=inner;
+    }
+
+    Ok(sum.to_string())
 }
 
-fn digits_of(mut i:&str)->Vec<char> {
+fn digits_of(i:&str)->Vec<char> {
     let result = i.chars().collect::<Vec<char>>();
     result
 }
