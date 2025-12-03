@@ -48,20 +48,12 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
 
         for i in index_of_second_highest..bank.len(){
             if bank[index_of_second_highest] < bank[i]{
-                println!("updated");
-                println!("{:?}", bank);
-                println!("high: {}, curr: {}, new:{}", index_of_highest, index_of_second_highest, i);
-
                 index_of_second_highest = i;
             }
         }
         let tensplace = bank[index_of_highest].to_digit(10).unwrap()*10;
         let onesplace = bank[index_of_second_highest].to_digit(10).unwrap();
-        println!("value {}",bank[index_of_second_highest]);
-        println!("index {}",index_of_second_highest);
-        println!("interpreted as {}",onesplace);
         let charge = tensplace+onesplace;
-        println!("charge: {}",charge);
         sum+=charge;
     }
     Ok(sum)
@@ -105,7 +97,6 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
             //brother... why in the world am i casting this much? am i doing it wrong?
             inner += (bank[highest_indices[x]].to_digit(10).unwrap() as u64) * 10u64.pow(x as u32)
         }
-        println!("sum{}", inner);
         sum+=inner;
     }
 
