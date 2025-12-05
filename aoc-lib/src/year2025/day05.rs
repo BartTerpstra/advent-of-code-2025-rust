@@ -57,17 +57,47 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
 }
 
 fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
-    let (ranges, _) = as_ranges_and_ingredients(_input);
+    let (mut ranges, _) = as_ranges_and_ingredients(_input);
     let mut count = 0;
-    for range in &ranges {
-        for range in &ranges {
-            //for a new range.
-            //if range inside existing range
-            //expand range
-            //else, add to range list.
+    loop{
+        let mut changed = false;
+        let mut go = true;
+        for i_candidate in 0..ranges.len() {
+            if changed {break;}
+            for i_target in 0..ranges.len() {
+                if changed {break;}
+                if i_candidate == i_target {continue}
+                //if range touches other range (always smaller range asks bigger range to be included)
+                let targeted = ranges.get(i_target).unwrap();
+                let candidate = ranges.get(i_candidate).unwrap();
+                let upper_with_kiss = targeted.upper+1;
+                let lower_with_kiss = targeted.lower-1;
+                let lower = candidate.lower;
+                let upper = candidate.upper;
+
+                //if touching or inside
+                if lower >= lower_with_kiss && lower <= upper_with_kiss ||
+                    upper >= lower_with_kiss && upper <= upper_with_kiss{
+                    //find smallest and largest.
+                    let new_lower = if (targeted.lower < candidate.lower){targeted.lower}else{candidate.lower};
+                    let new_upper = if (targeted.upper > candidate.upper){targeted.upper}else{candidate.upper};
+                    //removing by indexes depends on vec not changing ahead of it!
+                    let (first,second) = if (i_target>i_candidate){(i_target, i_candidate)}else{(i_candidate,i_target)};
+                    ranges.remove(first);
+                    ranges.remove(second);
+                    ranges.push(Range{lower:new_lower, upper:new_upper});
+                    changed = true;
+                    //break out of candidate (can be done fancy)
+                }
+            }
         }
+        if !changed {break};
     }
-    Ok(0)
+    let mut sum:u128 = 0;
+    for range in ranges {
+        sum+=range.upper-range.lower+1;
+    }
+    Ok(sum)
 }
 
 #[cfg(test)]
@@ -104,6 +134,6 @@ x
     #[test]
     fn test_part2() {
         let result = solve_part2(EXAMPLE).unwrap();
-        assert_eq!(result.to_string(), "0");
+        assert_eq!(result.to_string(), "14");
     }
 }
