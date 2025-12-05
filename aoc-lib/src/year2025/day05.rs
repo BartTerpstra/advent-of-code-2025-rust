@@ -122,7 +122,6 @@ x
         let (range, ing) = as_ranges_and_ingredients(EXAMPLE);
         println!("{:?}", range );
         println!("{:?}", ing );
-        // assert_eq!(result.to_string(), "3");
     }
 
     #[test]
