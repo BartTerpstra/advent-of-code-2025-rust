@@ -22,17 +22,17 @@ fn as_ranges_and_ingredients(file: &str) -> (Vec<Range>, Vec<u128>){
     let mut ranges = Vec::with_capacity(185);
     let mut ingredients = vec![];
     let trimmed = file.trim();
-    let (rangeFile, ingredientFile) = trimmed.split_once('x').unwrap();
-    let rangeList = rangeFile.trim().lines();
-    let ingredientList = ingredientFile.trim().lines();
+    let (range_file, ingredient_file) = trimmed.split_once('x').unwrap();
+    let range_list = range_file.trim().lines();
+    let ingredient_list = ingredient_file.trim().lines();
 
-    for range in rangeList {
+    for range in range_list {
         let (lower, upper) = range.split_once('-').unwrap();
         let (lower, upper) = (lower.parse().unwrap(), upper.parse().unwrap());
         ranges.push(Range{lower, upper})
     }
 
-    for ingredient in ingredientList {
+    for ingredient in ingredient_list {
         ingredients.push(ingredient.parse().unwrap());
     }
 
@@ -58,10 +58,8 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
 
 fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
     let (mut ranges, _) = as_ranges_and_ingredients(_input);
-    let mut count = 0;
     loop{
         let mut changed = false;
-        let mut go = true;
         for i_candidate in 0..ranges.len() {
             if changed {break;}
             for i_target in 0..ranges.len() {
@@ -79,10 +77,10 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
                 if lower >= lower_with_kiss && lower <= upper_with_kiss ||
                     upper >= lower_with_kiss && upper <= upper_with_kiss{
                     //find smallest and largest.
-                    let new_lower = if (targeted.lower < candidate.lower){targeted.lower}else{candidate.lower};
-                    let new_upper = if (targeted.upper > candidate.upper){targeted.upper}else{candidate.upper};
+                    let new_lower = if targeted.lower < candidate.lower {targeted.lower}else{candidate.lower};
+                    let new_upper = if targeted.upper > candidate.upper {targeted.upper}else{candidate.upper};
                     //removing by indexes depends on vec not changing ahead of it!
-                    let (first,second) = if (i_target>i_candidate){(i_target, i_candidate)}else{(i_candidate,i_target)};
+                    let (first,second) = if i_target > i_candidate {(i_target, i_candidate)}else{(i_candidate,i_target)};
                     ranges.remove(first);
                     ranges.remove(second);
                     ranges.push(Range{lower:new_lower, upper:new_upper});

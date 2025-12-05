@@ -48,6 +48,8 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
 
         for i in index_of_second_highest..bank.len(){
             if bank[index_of_second_highest] < bank[i]{
+                //I know, I know
+                //#[ignore(clippy::mut_range_bound)
                 index_of_second_highest = i;
             }
         }
@@ -78,14 +80,14 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
                 if bank[highest_indices[digit]] < bank[i] || (i==highest_indices[digit]){
                     highest_indices[digit] = i;
                     if bank[highest_indices[digit]] == '9'{
-                        if(digit+1 != digits) {
+                        if digit+1 != digits {
                             highest_indices[digit + 1] = highest_indices[digit] + 1;
                         }
                         break;
                     }
                 }
             }
-            if(digit+1 != digits) {
+            if digit+1 != digits {
                 highest_indices[digit + 1] = highest_indices[digit] + 1;
             }
         }
@@ -104,8 +106,7 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
 }
 
 fn digits_of(i:&str)->Vec<char> {
-    let result = i.chars().collect::<Vec<char>>();
-    result
+    i.chars().collect::<Vec<char>>()
 }
 
 #[cfg(test)]

@@ -47,9 +47,9 @@ fn to_num(boolean:bool)->u8{
     0
 }
 
-fn getAvailable(floor: &Shopfloor, coordinate:Coordinate) -> u8{
+fn get_available(floor: &Shopfloor, coordinate:Coordinate) -> u8{
 
-   if(to_num(floor[coordinate.height][coordinate.width]) == 0){return 9;}
+   if to_num(floor[coordinate.height][coordinate.width]) == 0 {return 9;}
 
     //assert coordinates are always atleast 1 in from the edge
     let mut sum = 0;
@@ -68,7 +68,7 @@ fn getAvailable(floor: &Shopfloor, coordinate:Coordinate) -> u8{
     sum
 }
 
-fn moveAll(floor: &mut Shopfloor, coordinates:Vec<Coordinate>) {
+fn move_all(floor: &mut Shopfloor, coordinates:Vec<Coordinate>) {
     for coord in coordinates {
         floor[coord.height][coord.width] = false;
     }
@@ -81,7 +81,7 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     let max_width = floor[0].len()-1;
     for height in 1..max_height {
         for width in 1..max_width{
-            if getAvailable(&floor, Coordinate{height, width}) < 4{
+            if get_available(&floor, Coordinate{height, width}) < 4{
                 total+=1
             }
         }
@@ -101,13 +101,13 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
         let mut coordinates_to_move:Vec<Coordinate> = vec![];
         for height in 1..max_height {
             for width in 1..max_width {
-                if getAvailable(&floor, Coordinate { height, width }) < 4 {
+                if get_available(&floor, Coordinate { height, width }) < 4 {
                     coordinates_to_move.push(Coordinate { height, width });
                     subtotal += 1;
                 }
             }
         }
-        moveAll(&mut floor, coordinates_to_move);
+        move_all(&mut floor, coordinates_to_move);
         total+=subtotal;
         if subtotal == 0{
             break;
