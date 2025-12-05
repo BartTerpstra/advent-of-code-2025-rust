@@ -16,9 +16,12 @@ pub fn solve() -> Result<()> {
 
 //assert 15 digits max < u128
 #[derive(Debug)]
-struct Range {lower:u128, upper:u128}
+struct Range {
+    lower: u128,
+    upper: u128,
+}
 
-fn as_ranges_and_ingredients(file: &str) -> (Vec<Range>, Vec<u128>){
+fn as_ranges_and_ingredients(file: &str) -> (Vec<Range>, Vec<u128>) {
     let mut ranges = Vec::with_capacity(185);
     let mut ingredients = vec![];
     let trimmed = file.trim();
@@ -29,7 +32,7 @@ fn as_ranges_and_ingredients(file: &str) -> (Vec<Range>, Vec<u128>){
     for range in range_list {
         let (lower, upper) = range.split_once('-').unwrap();
         let (lower, upper) = (lower.parse().unwrap(), upper.parse().unwrap());
-        ranges.push(Range{lower, upper})
+        ranges.push(Range { lower, upper })
     }
 
     for ingredient in ingredient_list {
@@ -44,21 +47,20 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     let mut count = 0;
     for ingredient in ingredients {
         for range in &ranges {
-            if ingredient <= range.upper && ingredient >= range.lower{
+            if ingredient <= range.upper && ingredient >= range.lower {
                 //in range
-                count+=1;
+                count += 1;
                 break;
             }
         }
     }
-
 
     Ok(count)
 }
 
 fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
     let (mut ranges, _) = as_ranges_and_ingredients(_input);
-    loop{
+    loop {
         let mut changed = false;
         for i_candidate in 0..ranges.len() {
             if changed {break;}
@@ -68,8 +70,8 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
                 //if range touches other range (always smaller range asks bigger range to be included)
                 let targeted = ranges.get(i_target).unwrap();
                 let candidate = ranges.get(i_candidate).unwrap();
-                let upper_with_kiss = targeted.upper+1;
-                let lower_with_kiss = targeted.lower-1;
+                let upper_with_kiss = targeted.upper + 1;
+                let lower_with_kiss = targeted.lower - 1;
                 let lower = candidate.lower;
                 let upper = candidate.upper;
 
@@ -91,9 +93,9 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
         }
         if !changed {break};
     }
-    let mut sum:u128 = 0;
+    let mut sum: u128 = 0;
     for range in ranges {
-        sum+=range.upper-range.lower+1;
+        sum += range.upper - range.lower + 1;
     }
     Ok(sum)
 }
