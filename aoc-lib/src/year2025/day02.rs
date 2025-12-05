@@ -25,14 +25,12 @@ pub fn solve() -> Result<()> {
     Ok(())
 }
 
-
-
 #[derive(Debug)]
-struct Range{
+struct Range {
     lower: u64,
-    upper: u64
+    upper: u64,
 }
-fn as_range_list(file: &str)->Vec<Range> {
+fn as_range_list(file: &str) -> Vec<Range> {
     //assert no invalid data
     let mut ranges = vec![];
     for range in file.trim().split(',') {
@@ -40,12 +38,12 @@ fn as_range_list(file: &str)->Vec<Range> {
 
         let lower = parts.next().unwrap().parse::<u64>().unwrap();
         let upper = parts.next().unwrap().parse::<u64>().unwrap();
-        ranges.push(Range{lower, upper});
+        ranges.push(Range { lower, upper });
     }
     ranges
 }
 
-fn check_equal_digits(i: u64)->u64 {
+fn check_equal_digits(i: u64) -> u64 {
     //we love typing
     match i {
         0..=9 => 0,
@@ -62,66 +60,71 @@ fn check_equal_digits(i: u64)->u64 {
     }
 }
 
-fn is_equal_half(i:u64, digits:u64) ->u64{
+fn is_equal_half(i: u64, digits: u64) -> u64 {
     let divisor = 10_u64.pow(digits as u32);
 
     //the following block exploits the fact that integer division rounds down,
     //allowing you to erase digits you push past the comma
-    let first_half = i/divisor;
-    let last_half = i - (i/divisor) *divisor;
-    if first_half == last_half{
+    let first_half = i / divisor;
+    let last_half = i - (i / divisor) * divisor;
+    if first_half == last_half {
         return i;
     }
     0
 }
 
-fn check_six_digits(i:u64) -> u64{
+fn check_six_digits(i: u64) -> u64 {
     //division by 3
-    let first = i/10000;
-    let last = i - (i /100)*100;
-    let middle = (i - first *10000 - last)/100;
-    if first == middle && middle == last {return i}
+    let first = i / 10000;
+    let last = i - (i / 100) * 100;
+    let middle = (i - first * 10000 - last) / 100;
+    if first == middle && middle == last {
+        return i;
+    }
 
     //division by two
-    is_equal_half(i, 6/2)
+    is_equal_half(i, 6 / 2)
 }
-fn check_eight(i:u64) -> u64{
+fn check_eight(i: u64) -> u64 {
     //division by 2 and four
     //all divisions by four also create a division by two
-    is_equal_half(i, 8/2)
+    is_equal_half(i, 8 / 2)
 }
-fn check_nine(i:u64) -> u64{
+fn check_nine(i: u64) -> u64 {
     //division by 3
-    let first = i/1000000;
-    let last = i - (i /1000)*1000;
-    let middle = (i - first *1000000 - last)/1000;
+    let first = i / 1000000;
+    let last = i - (i / 1000) * 1000;
+    let middle = (i - first * 1000000 - last) / 1000;
 
-    if first == middle && middle == last {return i}
+    if first == middle && middle == last {
+        return i;
+    }
 
     0
 }
-fn check_ten(i:u64) -> u64{
+fn check_ten(i: u64) -> u64 {
     // division by five
-    let five = i/100000000; //first two digits
+    let five = i / 100000000; //first two digits
     let four = (i - (five * 100000000)) / 1000000;
-    let three = (i - (four * 1000000)- (five * 100000000)) / 10000;
-    let two = (i - (three * 10000)- (four * 1000000)- (five * 100000000)) / 100;
-    let one = (i - (two * 100)- (three * 10000)- (four * 1000000)- (five * 100000000)) / 1;
+    let three = (i - (four * 1000000) - (five * 100000000)) / 10000;
+    let two = (i - (three * 10000) - (four * 1000000) - (five * 100000000)) / 100;
+    let one = (i - (two * 100) - (three * 10000) - (four * 1000000) - (five * 100000000)) / 1;
 
     //commutative
-    if five==one && one ==two && two == three && four == three{return i}
+    if five == one && one == two && two == three && four == three {
+        return i;
+    }
 
     //division by 2
     is_equal_half(i, 5)
 }
-
 
 fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     //assert smaller than 11 digits, < u64
     //assert no overlapping ranges
     let ranges = as_range_list(_input);
 
-    let mut sum:u128 = 0;
+    let mut sum: u128 = 0;
     for range in &ranges {
         for i in range.lower..=range.upper {
             let addition = match i {
@@ -147,7 +150,7 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
 
 fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
     let ranges = as_range_list(_input);
-    let mut sum:u128 = 0;
+    let mut sum: u128 = 0;
     for range in &ranges {
         for i in range.lower..=range.upper {
             let addition = match i {
@@ -176,11 +179,10 @@ mod tests {
 
     const EXAMPLE: &str = "11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124";
 
-
     #[test]
     fn parser() {
         let result = as_range_list(EXAMPLE);
-        println!("{:?}",result)
+        println!("{:?}", result)
     }
 
     #[test]
