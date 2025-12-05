@@ -40,12 +40,33 @@ fn as_ranges_and_ingredients(file: &str) -> (Vec<Range>, Vec<u128>){
 }
 
 fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
-    // TODO: Implement part 1
-    Ok(0)
+    let (ranges, ingredients) = as_ranges_and_ingredients(_input);
+    let mut count = 0;
+    for ingredient in ingredients {
+        for range in &ranges {
+            if ingredient <= range.upper && ingredient >= range.lower{
+                //in range
+                count+=1;
+                break;
+            }
+        }
+    }
+
+
+    Ok(count)
 }
 
 fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
-    // TODO: Implement part 2
+    let (ranges, _) = as_ranges_and_ingredients(_input);
+    let mut count = 0;
+    for range in &ranges {
+        for range in &ranges {
+            //for a new range.
+            //if range inside existing range
+            //expand range
+            //else, add to range list.
+        }
+    }
     Ok(0)
 }
 
