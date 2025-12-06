@@ -25,6 +25,7 @@ fn as_ranges_and_ingredients(file: &str) -> (Vec<Range>, Vec<u128>) {
     let mut ranges = Vec::with_capacity(185);
     let mut ingredients = vec![];
     let trimmed = file.trim();
+    //todo fix this deviation where i replace empty new-line split with x, also in source
     let (range_file, ingredient_file) = trimmed.split_once('x').unwrap();
     let range_list = range_file.trim().lines();
     let ingredient_list = ingredient_file.trim().lines();
