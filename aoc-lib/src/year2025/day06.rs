@@ -64,6 +64,11 @@ fn as_associate_columns(file: &str)->Vec<Formula>{
     return result
 }
 
+fn transform_to_human(forms: Vec<CephalopodFormula>) -> Vec<Formula>{
+    let result = vec![];
+
+    result
+}
 fn read_as_cephalopod(file: &str) ->Vec<Formula>{
     //assert no invalid input
     let mut cephalopod_forms = vec![];
@@ -78,18 +83,42 @@ fn read_as_cephalopod(file: &str) ->Vec<Formula>{
         }
     }
 
+    //index into line and populate
+    //spaces are zeroes
     for line in lines {
-        for form in &cephalopod_forms {
-            //bzztt wrong, you need to dynamically get the length based on offsets.
-            //tho we can fix this by simply reading till a space, this is not what i would like.
-
+        let char_line: Vec<char> = line.chars().collect();
+        for form in &mut cephalopod_forms {
+            let mut digit_line = vec![];
+            //couldn't quickly think of a prettier way of doing this
+            let mut index = form.index;
+            //wait to hit characters
+            loop{
+                let char = *char_line.get(index).unwrap();
+                if char == ' ' {
+                    digit_line.push('0');
+                    index+=1
+                }else{
+                    digit_line.push(char);
+                    index+=1;
+                    break;
+                }
+            }
+            //wait to hit end
+            loop{
+                let char = *char_line.get(index).unwrap();
+                if char == ' ' || index >= char_line.len()-1 {
+                    break;
+                }else{
+                    digit_line.push(char);
+                    index+=1;
+                }
+            }
+            println!("{:?}", digit_line);
+            form.digits.push(digit_line);
         }
     }
 
-    //index into line and populate
-    //spaces are zeroes
-
-    //rotate cephalopod formulas into regular formulas //seperate func
+    let result = transform_to_human(cephalopod_forms);
     result
 }
 
@@ -151,6 +180,6 @@ mod tests {
     #[test]
     fn test_part2() {
         let result = solve_part2(EXAMPLE).unwrap();
-        assert_eq!(result.to_string(), "0");
+        assert_eq!(result.to_string(), "3263827");
     }
 }
