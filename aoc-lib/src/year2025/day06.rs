@@ -24,6 +24,7 @@ struct Formula{
 
 type Factor = u32;
 
+#[derive(Debug)]
 struct CephalopodFormula {
     digits: Vec<Vec<char>>,
     operation:char,
@@ -64,9 +65,57 @@ fn as_associate_columns(file: &str)->Vec<Formula>{
     return result
 }
 
-fn transform_to_human(forms: Vec<CephalopodFormula>) -> Vec<Formula>{
-    let result = vec![];
+fn transform_to_human(mut forms: Vec<CephalopodFormula>) -> Vec<Formula>{
+    let mut result = vec![];
+    //I didn't write it in a smart way.
+    //so now we have to make sure every short array has padded zeroes at the end.
+    for form in &mut forms {
+        println!("pre-pad{:?}",form);
 
+        let mut max = 0;
+        for line in &form.digits {
+            if line.len() > max{
+                max=line.len();
+            }
+        }
+
+        for line in &mut form.digits {
+            if line.len()<max{
+                line.push('0')
+            }
+        }
+    }
+
+    for form in forms {
+        println!("padded {:?}",form);
+        let mut human_form = Formula{ factors: vec![], operation: form.operation };
+        let length = form.digits.len();
+        //rotate array and convert to numbers
+        //why am i writing 2-d array rotation again? i should just learn which lib to consume
+        let mut rotated_digits:Vec<Vec<char>> = vec![vec![];length];
+        for i in 0..length{
+            for j in 0..length{
+                rotated_digits[j].push(form.digits[i][length - j - 1]);
+            }
+        }
+        println!("rotated- {:?}",rotated_digits);
+
+
+        for char_factor in rotated_digits {
+            let least_to_most_significant = char_factor.iter();
+            let mut multiplier = 1;
+            let mut factor = 0;
+            for char in least_to_most_significant {
+                if *char == '0' {continue;}
+                factor += char.to_digit(10).unwrap()*multiplier;
+                multiplier *= 10;
+            }
+            human_form.factors.push(factor)
+        }
+        println!("done-{:?}",human_form);
+
+        result.push(human_form)
+    }
     result
 }
 fn read_as_cephalopod(file: &str) ->Vec<Formula>{
@@ -105,18 +154,19 @@ fn read_as_cephalopod(file: &str) ->Vec<Formula>{
             }
             //wait to hit end
             loop{
+                if  index >= char_line.len() {break;}
                 let char = *char_line.get(index).unwrap();
-                if char == ' ' || index >= char_line.len()-1 {
+                if char == ' '{
                     break;
                 }else{
                     digit_line.push(char);
                     index+=1;
                 }
             }
-            println!("{:?}", digit_line);
             form.digits.push(digit_line);
         }
     }
+    println!("{:?}", cephalopod_forms);
 
     let result = transform_to_human(cephalopod_forms);
     result
