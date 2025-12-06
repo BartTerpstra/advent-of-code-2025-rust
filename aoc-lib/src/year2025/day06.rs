@@ -66,12 +66,12 @@ fn as_associate_columns(file: &str)->Vec<Formula>{
 
 fn as_triple_slices(file: &str) ->Vec<Formula>{
     let result = vec![];
-    //but first lunch
+    //lunch was good
     //trim.lines
     //reverse
-    //for chars
-    //if operator
-    //save index with empty formula (cephalopod formula)
+    //for operator
+        //index all
+        //save index with empty formula (cephalopod formula)
 
     //for rest of lines
     //for every formula
