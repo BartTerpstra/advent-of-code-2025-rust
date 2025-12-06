@@ -80,7 +80,7 @@ fn transform_to_human(mut forms: Vec<CephalopodFormula>) -> Vec<Formula>{
         }
 
         for line in &mut form.digits {
-            if line.len()<max{
+            while line.len()<max{
                 line.push('0')
             }
         }
@@ -90,16 +90,15 @@ fn transform_to_human(mut forms: Vec<CephalopodFormula>) -> Vec<Formula>{
         println!("padded {:?}",form);
         let mut human_form = Formula{ factors: vec![], operation: form.operation };
         let length = form.digits.len();
+        let width = form.digits.get(0).unwrap().len();
         //rotate array and convert to numbers
         //why am i writing 2-d array rotation again? i should just learn which lib to consume
         let mut rotated_digits:Vec<Vec<char>> = vec![vec![];length];
         for i in 0..length{
-            for j in 0..length{
-                rotated_digits[j].push(form.digits[i][length - j - 1]);
+            for j in 0..width{
+                rotated_digits[j].push(form.digits[i][width - j - 1]);
             }
         }
-        println!("rotated- {:?}",rotated_digits);
-
 
         for char_factor in rotated_digits {
             let least_to_most_significant = char_factor.iter();
@@ -112,7 +111,6 @@ fn transform_to_human(mut forms: Vec<CephalopodFormula>) -> Vec<Formula>{
             }
             human_form.factors.push(factor)
         }
-        println!("done-{:?}",human_form);
 
         result.push(human_form)
     }
