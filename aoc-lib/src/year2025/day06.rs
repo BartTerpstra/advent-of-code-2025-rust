@@ -101,16 +101,19 @@ fn transform_to_human(mut forms: Vec<CephalopodFormula>) -> Vec<Formula>{
         }
 
         for char_factor in rotated_digits {
-            let least_to_most_significant = char_factor.iter();
+            if char_factor.is_empty() {break;}
+            let chars = char_factor.iter();
             let mut multiplier = 1;
             let mut factor = 0;
-            for char in least_to_most_significant {
+
+            for char in chars {
                 if *char == '0' {continue;}
                 factor += char.to_digit(10).unwrap()*multiplier;
                 multiplier *= 10;
             }
             human_form.factors.push(factor)
         }
+        println!("{:?}", human_form);
 
         result.push(human_form)
     }
@@ -186,7 +189,6 @@ fn reduce(formulas: Vec<Formula>) -> u128{
             }
         }
         total+=sum;
-        println!("{}", sum)
     }
     total
 }
@@ -228,6 +230,7 @@ mod tests {
     #[test]
     fn test_part2() {
         let result = solve_part2(EXAMPLE).unwrap();
+
         assert_eq!(result.to_string(), "3263827");
     }
 }
