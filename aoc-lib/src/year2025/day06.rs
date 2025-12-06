@@ -68,16 +68,16 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
 
     let mut total = 0;
     for formula in formulas {
-        let mut sum = 0;
+        let mut sum: u128 = 0;
         if formula.operation == '*'{
             sum = 1;
         }
 
         for factor in formula.factors {
             if formula.operation == '*'{
-                sum*=factor.value
+                sum*=factor.value as u128
             }else{
-                sum+=factor.value
+                sum+=factor.value as u128
             }
         }
         total+=sum;
