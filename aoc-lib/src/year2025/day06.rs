@@ -1,6 +1,7 @@
 use std::fmt::Formatter;
 use crate::utils;
 use anyhow::Result;
+use colored::Colorize;
 
 pub fn solve() -> Result<()> {
     let input = utils::load_input(2025, 6)?;
@@ -15,20 +16,48 @@ pub fn solve() -> Result<()> {
     Ok(())
 }
 
-type Formula= Vec<Factor>;
-struct Factor {
-    value: u32,
+#[derive(Debug)]
+struct Formula{
+    factors: Vec<Factor>,
     operation: char //'*'|'+'
 }
 
+#[derive(Debug)]
+struct Factor {
+    value: u32,
+}
+
 fn as_associate_columns(file: &str)->Vec<Formula>{
-    let result = vec![];
-    //trim.as lines
-    //reverse
-    //operation vec
-    //for every line
-    //zipper
-    //return
+    //assert no invalid input
+    let mut result = vec![];
+    let mut operators = vec![];
+
+    let mut lines = file.trim().lines().rev();
+    let operator_line = lines.next().unwrap().split_whitespace();
+    for word in operator_line {
+        //every word ought to be a string containing a single char operator
+        operators.push(word.chars().next().unwrap())
+    }
+
+    let width = operators.len();
+    //pre-allocate
+    for index in 0..width{
+        let factors = Vec::with_capacity(6);
+        result.push(Formula{factors, operation:operators[index]})
+    }
+
+    for line in lines {
+        let words = line.split_whitespace();
+        let mut index = 0;
+        for word in words {
+            let value = word.parse().unwrap();
+            let formula = result.get_mut(index).unwrap(); //safe because of assert valid input
+            let inner = &mut formula.factors;
+            inner.push(Factor{value});
+
+            index+=1;
+        }
+    }
     return result
 }
 
@@ -55,6 +84,12 @@ mod tests {
  45 64  387 23 
   6 98  215 314
 *   +   *   + ";
+
+    #[test]
+    fn parser() {
+        let result = as_associate_columns(EXAMPLE);
+        println!("{:?}", result);
+    }
 
     #[test]
     fn test_part1() {
