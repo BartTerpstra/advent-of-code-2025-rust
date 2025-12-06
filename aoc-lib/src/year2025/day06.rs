@@ -66,8 +66,25 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     //for every formula keep an accumulator,
     //for ever factor, operate on accumulator
 
+    let mut total = 0;
+    for formula in formulas {
+        let mut sum = 0;
+        if formula.operation == '*'{
+            sum = 1;
+        }
+
+        for factor in formula.factors {
+            if formula.operation == '*'{
+                sum*=factor.value
+            }else{
+                sum+=factor.value
+            }
+        }
+        total+=sum;
+        println!("{}", sum)
+    }
     // TODO: Implement part 1
-    Ok(0)
+    Ok(total)
 }
 
 fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
