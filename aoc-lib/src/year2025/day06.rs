@@ -64,17 +64,28 @@ fn as_associate_columns(file: &str)->Vec<Formula>{
     return result
 }
 
-fn as_triple_slices(file: &str) ->Vec<Formula>{
-    let result = vec![];
-    //lunch was good
-    //trim.lines
-    //reverse
-    //for operator
-        //index all
-        //save index with empty formula (cephalopod formula)
+fn read_as_cephalopod(file: &str) ->Vec<Formula>{
+    //assert no invalid input
+    let mut cephalopod_forms = vec![];
 
-    //for rest of lines
-    //for every formula
+    let mut lines = file.trim().lines().rev();
+    let operator_line = lines.next().unwrap();
+    for operation in ['*','+']{
+        let indices:Vec<usize> = operator_line.match_indices(operation).map(|x|x.0).collect();
+        for index in indices {
+            let form = CephalopodFormula{index, operation, digits:vec![]};
+            cephalopod_forms.push(form);
+        }
+    }
+
+    for line in lines {
+        for form in &cephalopod_forms {
+            //bzztt wrong, you need to dynamically get the length based on offsets.
+            //tho we can fix this by simply reading till a space, this is not what i would like.
+
+        }
+    }
+
     //index into line and populate
     //spaces are zeroes
 
@@ -110,7 +121,7 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
 }
 
 fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
-    let formulas = as_triple_slices(_input);
+    let formulas = read_as_cephalopod(_input);
     let answer = reduce(formulas);
     Ok(answer)
 }
