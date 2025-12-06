@@ -66,6 +66,7 @@ fn as_associate_columns(file: &str)->Vec<Formula>{
 
 fn as_triple_slices(file: &str) ->Vec<Formula>{
     let result = vec![];
+    //but first lunch
     //trim.lines
     //reverse
     //for chars
