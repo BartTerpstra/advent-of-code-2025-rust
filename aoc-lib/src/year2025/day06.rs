@@ -22,9 +22,12 @@ struct Formula{
     operation: char //'*'|'+'
 }
 
-#[derive(Debug)]
-struct Factor {
-    value: u32,
+type Factor = u32;
+
+struct CephalopodFormula {
+    digits: Vec<Vec<char>>,
+    operation:char,
+    index:usize,
 }
 
 fn as_associate_columns(file: &str)->Vec<Formula>{
@@ -53,7 +56,7 @@ fn as_associate_columns(file: &str)->Vec<Formula>{
             let value = word.parse().unwrap();
             let formula = result.get_mut(index).unwrap(); //safe because of assert valid input
             let inner = &mut formula.factors;
-            inner.push(Factor{value});
+            inner.push(value);
 
             index+=1;
         }
@@ -61,11 +64,24 @@ fn as_associate_columns(file: &str)->Vec<Formula>{
     return result
 }
 
-fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
-    let formulas = as_associate_columns(_input);
-    //for every formula keep an accumulator,
-    //for ever factor, operate on accumulator
+fn as_triple_slices(file: &str) ->Vec<Formula>{
+    let result = vec![];
+    //trim.lines
+    //reverse
+    //for chars
+    //if operator
+    //save index with empty formula (cephalopod formula)
 
+    //for rest of lines
+    //for every formula
+    //index into line and populate
+    //spaces are zeroes
+
+    //rotate cephalopod formulas into regular formulas //seperate func
+    result
+}
+
+fn reduce(formulas: Vec<Formula>) -> u128{
     let mut total = 0;
     for formula in formulas {
         let mut sum: u128 = 0;
@@ -75,21 +91,27 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
 
         for factor in formula.factors {
             if formula.operation == '*'{
-                sum*=factor.value as u128
+                sum*=factor as u128
             }else{
-                sum+=factor.value as u128
+                sum+=factor as u128
             }
         }
         total+=sum;
         println!("{}", sum)
     }
-    // TODO: Implement part 1
-    Ok(total)
+    total
+}
+
+fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
+    let formulas = as_associate_columns(_input);
+    let answer = reduce(formulas);
+    Ok(answer)
 }
 
 fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
-    // TODO: Implement part 2
-    Ok(0)
+    let formulas = as_triple_slices(_input);
+    let answer = reduce(formulas);
+    Ok(answer)
 }
 
 #[cfg(test)]
