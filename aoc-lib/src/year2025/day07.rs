@@ -24,6 +24,11 @@ enum TachState {
     Bug
 }
 
+struct Tach_with_intensity{
+    state:TachState,
+    intensity: u128 // max is 2^(148/2) = 2^74 < u128
+}
+
 impl fmt::Display for TachState {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let answer = match self{
@@ -104,14 +109,6 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
                 }
             }
         }
-
-        for line in &sim {
-            for state in line {
-                print!("{}", state)
-            }
-            println!()
-        }
-        println!("------------------")
     }
 
     //return counter
@@ -119,7 +116,43 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
 }
 
 fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
-    // TODO: Implement part 2
+    //so much for writing it like a sim, the new problem wants to know the leaves of the tree
+    // a simple way to do it is that a beam has an intensity, representing the amount of possible timelines it already has.
+    //only upon merging with another beam do their intensities get added
+    //intensity is preserved on split.
+
+    let mut sim = as_sim_field(_input);
+
+    for line_i in 1..sim.len() {
+        let lookback = sim.get(line_i - 1).unwrap().clone();
+        let line = sim.get_mut(line_i).unwrap();
+
+        for current_w_index in 0..lookback.len() {
+            let above_state = lookback.get(current_w_index).unwrap();
+            if *above_state == TachState::Beam {
+                let below_state = line.get_mut(current_w_index).unwrap();
+                match below_state {
+                    TachState::Empty => { *below_state = TachState::Beam }
+                    TachState::Splitter => {
+                        //assert a splitter will not be placed on the edge of the sim
+                        let l = line.get_mut(current_w_index + 1).unwrap();
+                        *l = TachState::Beam;
+                        let r = line.get_mut(current_w_index - 1).unwrap();
+                        *r = TachState::Beam;
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        for line in &sim {
+            for state in line {
+                print!("{}", state)
+            }
+            println!()
+        }
+        println!("------------------");
+    }
     Ok(0)
 }
 
