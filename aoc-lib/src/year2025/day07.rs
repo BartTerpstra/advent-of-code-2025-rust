@@ -38,6 +38,7 @@ fn as_tach_state(char: char) -> TachState{
     match char{
         '.' =>TachState::Empty ,
         '|' =>TachState::Beam ,
+        'S' => TachState::Beam,
         '^' => TachState::Splitter ,
         _ => TachState::Bug
     }
@@ -73,7 +74,9 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     //assert no splitters are next to eachother ^^
     //such a file is considered ill-formed and safety mechanism will not be implemented.
 
+    for line in sim {
 
+    }
     //for every line, starting with second and given look-back 1.
     //for every character in look-back, if |
     //check if index of line is empty, if empty, set |
