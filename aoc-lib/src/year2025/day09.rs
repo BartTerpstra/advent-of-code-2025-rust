@@ -95,7 +95,7 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
     //if a point was already part of the same graph, walk the graph and mark nodes with circle UID.
     //given this graph, butcher it.
     //every circle cut into rectangles and lines cut to lines.
-    //(duplicate and overlap allowed if easier to implement. negligeable slowdown)
+    //(duplicate and overlap allowed if easier to implement. trivial slowdown)
 
     //for every point to every point
     //area original outer points
