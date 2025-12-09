@@ -15,7 +15,21 @@ pub fn solve() -> Result<()> {
 }
 
 fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
-    // TODO: Implement part 1
+    //really, this is like a naive solution to the 3 dimensional traveling salesman problem
+    //combined with dijkstra
+
+    //let's have virtual networks.
+    //start with a list of points with network IDs equal to their index
+    //for every point against every point not checked (n^2)
+    //calculate distance
+    //store in list with ref L, ref R, distance.
+    //sort.
+    //for every item
+    //if L.get_network == R.get_network continue
+    //else combine_networks(l.get_network, r.get_network)
+
+
+    //make list for today and tomorrow
     Ok(0)
 }
 
