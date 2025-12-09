@@ -15,7 +15,18 @@ pub fn solve() -> Result<()> {
 }
 
 fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
-    // TODO: Implement part 1
+    //There is no floor neo!
+
+    //file as str
+    //trim
+    //lines
+    //split_once ","
+    //parse
+    //as list of coords
+
+    //for every point to every other point not checked
+    //get area between
+    //return MAX
     Ok(0)
 }
 

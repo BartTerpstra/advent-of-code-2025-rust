@@ -27,9 +27,6 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     //for every item
     //if L.get_network == R.get_network continue
     //else combine_networks(l.get_network, r.get_network)
-
-
-    //make list for today and tomorrow
     Ok(0)
 }
 
