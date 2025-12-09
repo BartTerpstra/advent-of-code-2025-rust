@@ -15,7 +15,7 @@ pub fn solve() -> Result<()> {
     Ok(())
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Copy)]
 #[derive(Clone)]
 enum TachState {
     Empty,
@@ -24,10 +24,16 @@ enum TachState {
     Bug
 }
 
-#[derive(Clone)]
-struct Tach_with_intensity{
+#[derive(Clone, Copy)]
+struct TachWithIntensity {
     state:TachState,
     intensity: u128 // max is 2^(148/2) = 2^74 < u128
+}
+
+impl TachWithIntensity {
+    fn copy(&self) -> TachWithIntensity {
+        TachWithIntensity{intensity:self.intensity, state: self.state}
+    }
 }
 
 impl fmt::Display for TachState {
@@ -68,14 +74,18 @@ fn as_sim_field(_input:&str) -> Vec<Vec<TachState>>{
 }
 
 //todo replace this with a map function that takes the other function
-fn as_sim_field_with_intensity(_input:&str) -> Vec<Vec<Tach_with_intensity>> {
+fn as_sim_field_with_intensity(_input:&str) -> Vec<Vec<TachWithIntensity>> {
     let mut result = vec![];
     let lines = _input.trim().lines();
 
     for line in lines {
         let mut sim_line = vec![];
         for char in line.chars() {
-            sim_line.push(Tach_with_intensity{state:as_tach_state(char),intensity:0})
+            if char == 'S' {
+                sim_line.push(TachWithIntensity {state:as_tach_state(char),intensity:1})
+            }else{
+                sim_line.push(TachWithIntensity {state:as_tach_state(char),intensity:0})
+            }
         }
         result.push(sim_line)
     }
@@ -145,25 +155,48 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
         let line = sim.get_mut(line_i).unwrap();
 
         for current_w_index in 0..lookback.len() {
-            let above_state = lookback.get(current_w_index).unwrap();
-            if above_state.state == TachState::Beam {
-                let below_state = line.get_mut(current_w_index).unwrap();
-                match below_state.state {
-                    TachState::Empty => { below_state.state = TachState::Beam }
+            let above = lookback.get(current_w_index).unwrap();
+            if above.state == TachState::Beam {
+                let below = line.get_mut(current_w_index).unwrap();
+                match below.state {
+                    TachState::Empty => { *below = above.copy(); }
                     TachState::Splitter => {
+                        //we work left to right.
+                        //if we already place a beam, intensity beam instead
+
                         //assert a splitter will not be placed on the edge of the sim
                         let l = line.get_mut(current_w_index + 1).unwrap();
                         l.state = TachState::Beam;
+                        l.intensity+=above.intensity;
+
+
                         let r = line.get_mut(current_w_index - 1).unwrap();
                         r.state = TachState::Beam;
+                        r.intensity = above.intensity; //this is correct, we work left to right
+                    }
+                    TachState::Beam =>{
+                        below.intensity+=above.intensity;
                     }
                     _ => {}
                 }
             }
         }
-
     }
-    Ok(0)
+    for line in &sim {
+        for state in line {
+            print!("{}", state.state)
+        }
+        println!()
+    }
+    println!("------------------");
+
+
+    //for every beam on last line
+    //get intensity.
+    //sum
+    let sum:u128 = sim.iter().last().unwrap().iter().map(|x|x.intensity).sum();
+
+    Ok(sum)
 }
 
 #[cfg(test)]
