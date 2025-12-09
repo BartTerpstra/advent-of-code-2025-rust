@@ -34,24 +34,26 @@ impl fmt::Display for TachState {
     }
 }
 
-fn as_tach_state(char: char){
+fn as_tach_state(char: char) -> TachState{
     match char{
         '.' =>TachState::Empty ,
         '|' =>TachState::Beam ,
         '^' => TachState::Splitter ,
         _ => TachState::Bug
-    };
+    }
 }
 
 fn as_sim_field(_input:&str) -> Vec<Vec<TachState>>{
     let mut result = vec![];
-    //for file as string
-    //trim
-    //lines
-    //per line, create sim line
-    //per character, transform to 0 1, 2 (enum with display?)
-    //append line to result
-    //result
+    let lines = _input.trim().lines();
+
+    for line in lines {
+        let mut sim_line = vec![];
+        for char in line.chars() {
+            sim_line.push(as_tach_state(char))
+        }
+        result.push(sim_line)
+    }
 
     result
 }
