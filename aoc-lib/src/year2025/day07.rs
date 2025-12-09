@@ -24,6 +24,7 @@ enum TachState {
     Bug
 }
 
+#[derive(Clone)]
 struct Tach_with_intensity{
     state:TachState,
     intensity: u128 // max is 2^(148/2) = 2^74 < u128
@@ -59,6 +60,22 @@ fn as_sim_field(_input:&str) -> Vec<Vec<TachState>>{
         let mut sim_line = vec![];
         for char in line.chars() {
             sim_line.push(as_tach_state(char))
+        }
+        result.push(sim_line)
+    }
+
+    result
+}
+
+//todo replace this with a map function that takes the other function
+fn as_sim_field_with_intensity(_input:&str) -> Vec<Vec<Tach_with_intensity>> {
+    let mut result = vec![];
+    let lines = _input.trim().lines();
+
+    for line in lines {
+        let mut sim_line = vec![];
+        for char in line.chars() {
+            sim_line.push(Tach_with_intensity{state:as_tach_state(char),intensity:0})
         }
         result.push(sim_line)
     }
@@ -121,7 +138,7 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
     //only upon merging with another beam do their intensities get added
     //intensity is preserved on split.
 
-    let mut sim = as_sim_field(_input);
+    let mut sim = as_sim_field_with_intensity(_input);
 
     for line_i in 1..sim.len() {
         let lookback = sim.get(line_i - 1).unwrap().clone();
@@ -129,29 +146,22 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
 
         for current_w_index in 0..lookback.len() {
             let above_state = lookback.get(current_w_index).unwrap();
-            if *above_state == TachState::Beam {
+            if above_state.state == TachState::Beam {
                 let below_state = line.get_mut(current_w_index).unwrap();
-                match below_state {
-                    TachState::Empty => { *below_state = TachState::Beam }
+                match below_state.state {
+                    TachState::Empty => { below_state.state = TachState::Beam }
                     TachState::Splitter => {
                         //assert a splitter will not be placed on the edge of the sim
                         let l = line.get_mut(current_w_index + 1).unwrap();
-                        *l = TachState::Beam;
+                        l.state = TachState::Beam;
                         let r = line.get_mut(current_w_index - 1).unwrap();
-                        *r = TachState::Beam;
+                        r.state = TachState::Beam;
                     }
                     _ => {}
                 }
             }
         }
 
-        for line in &sim {
-            for state in line {
-                print!("{}", state)
-            }
-            println!()
-        }
-        println!("------------------");
     }
     Ok(0)
 }
