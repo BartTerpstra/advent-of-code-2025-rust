@@ -62,7 +62,7 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
     //sort points by y value
     //for every matching y value create a line between.
 
-    //nicety: please pre individual line segments like #1#2# over spans or with spans. because:
+    //nicety: please prefer individual line segments like #1#2# over spans or with spans. because:
 
     //for every points to every other point not checked, find area
     //sort descending
@@ -72,11 +72,18 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
 
 
     //todo the runtime properties of this would seem pretty dire at first glance, maybe this can be optimised?
+    //the algorithm is probably incorrect because a shape can be cleared by a line of line segments
+    //......
+    //....
+    //.......
+    //.....
+    //.......
+
     //bounds check is defined as
     //shoot a ray out from any point of the area, out from the area.
     //once you hit a line, start bound checking:
     //move clockwise around the area by following line segments recursively depth first, prefering inner rotation.
-    //if you hit the area, clear the edge between shot fired and area touched.
+    //if you hit the area, continue, but set_flag only partial solve.
         //if not entirely cleared, send new beam from pixel circularly after touch
     //if you exhaust, continue to next candidate area
     //if you end up at yourself, return area.
