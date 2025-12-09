@@ -30,11 +30,7 @@ struct TachWithIntensity {
     intensity: u128 // max is 2^(148/2) = 2^74 < u128
 }
 
-impl TachWithIntensity {
-    fn copy(&self) -> TachWithIntensity {
-        TachWithIntensity{intensity:self.intensity, state: self.state}
-    }
-}
+
 
 impl fmt::Display for TachState {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -159,18 +155,17 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
             if above.state == TachState::Beam {
                 let below = line.get_mut(current_w_index).unwrap();
                 match below.state {
-                    TachState::Empty => { *below = above.copy(); }
+                    TachState::Empty => { *below = TachWithIntensity{state:above.state,intensity:above.intensity}; }
                     TachState::Splitter => {
                         //we work left to right.
                         //if we already place a beam, intensity beam instead
 
                         //assert a splitter will not be placed on the edge of the sim
-                        let l = line.get_mut(current_w_index + 1).unwrap();
+                        let l = line.get_mut(current_w_index - 1).unwrap();
                         l.state = TachState::Beam;
                         l.intensity+=above.intensity;
 
-
-                        let r = line.get_mut(current_w_index - 1).unwrap();
+                        let r = line.get_mut(current_w_index + 1).unwrap();
                         r.state = TachState::Beam;
                         r.intensity = above.intensity; //this is correct, we work left to right
                     }
@@ -184,7 +179,7 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
     }
     for line in &sim {
         for state in line {
-            print!("{}", state.state)
+            print!("{}", state.intensity)
         }
         println!()
     }
