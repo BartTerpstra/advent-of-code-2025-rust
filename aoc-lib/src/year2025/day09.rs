@@ -53,7 +53,33 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
 }
 
 fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
-    // TODO: Implement part 2
+    // I knew it was too good to be true
+    // a floor is still too expensive
+
+    //sort points by x value
+    //for every matching x value create a line between.
+
+    //sort points by y value
+    //for every matching y value create a line between.
+
+    //nicety: please pre individual line segments like #1#2# over spans or with spans. because:
+
+    //for every points to every other point not checked, find area
+    //sort descending
+
+    //for every area
+    //bounds check
+
+
+    //todo the runtime properties of this would seem pretty dire at first glance, maybe this can be optimised?
+    //bounds check is defined as
+    //shoot a ray out from any point of the area, out from the area.
+    //once you hit a line, start bound checking:
+    //move clockwise around the area by following line segments recursively depth first, prefering inner rotation.
+    //if you hit the area, clear the edge between shot fired and area touched.
+        //if not entirely cleared, send new beam from pixel circularly after touch
+    //if you exhaust, continue to next candidate area
+    //if you end up at yourself, return area.
     Ok(0)
 }
 
