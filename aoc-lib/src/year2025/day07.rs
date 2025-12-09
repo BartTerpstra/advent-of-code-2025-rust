@@ -15,7 +15,31 @@ pub fn solve() -> Result<()> {
 }
 
 fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
-    // TODO: Implement part 1
+    //virtual would be too much work and error-prone
+    //let's just run a full sim.
+    //142^2, approx 20.000 elements, assuming u8 per elements, that's 20kbish ram, is fine.
+    //time is linear or better, we're just doing 1 line at a time and there is no interference between operations.
+
+
+    //for file as string
+    //trim
+    //lines
+    //per line, create sim line
+    //per character, transform to 0 1, 2 (enum with display?)
+    //append line to result
+    //result
+
+    //assert no splitters are next to eachother ^^
+    //such a file is considered ill-formed and safety mechanism will not be implemented.
+
+    //for every line, starting with second and given look-back 1.
+    //for every character in look-back, if |
+    //check if index of line is empty, if empty, set |
+    //                      is splitter, set neighbours to |
+
+    //DEBUG/RESULT: if setting because splitter, increment counter
+
+    //return counter
     Ok(0)
 }
 
