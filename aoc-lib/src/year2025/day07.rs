@@ -15,6 +15,8 @@ pub fn solve() -> Result<()> {
     Ok(())
 }
 
+#[derive(PartialEq)]
+#[derive(Clone)]
 enum TachState {
     Empty,
     Beam,
@@ -74,15 +76,43 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     //assert no splitters are next to eachother ^^
     //such a file is considered ill-formed and safety mechanism will not be implemented.
 
-    for line in sim {
-
-    }
     //for every line, starting with second and given look-back 1.
     //for every character in look-back, if |
     //check if index of line is empty, if empty, set |
     //                      is splitter, set neighbours to |
+    for line_i in 1..sim.len(){
+        let lookback = sim.get(line_i-1).unwrap().clone();
+        let line = sim.get_mut(line_i).unwrap();
 
-    //DEBUG/RESULT: if setting because splitter, increment counter
+        for current_w_index in 0..lookback.len() {
+            let above_state = lookback.get(current_w_index).unwrap();
+            if *above_state == TachState::Beam {
+                let below_state = line.get_mut(current_w_index).unwrap();
+                match below_state {
+                    TachState::Empty => {*below_state = TachState::Beam }
+                    TachState::Splitter => {
+                        //assert a splitter will not be placed on the edge of the sim
+                        let l = line.get_mut(current_w_index +1).unwrap();
+                        *l = TachState::Beam;
+                        let r = line.get_mut(current_w_index -1).unwrap();
+                        *r = TachState::Beam;
+
+                        //DEBUG/RESULT: if setting because splitter, increment counter
+                        split_count+=1;
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        for line in &sim {
+            for state in line {
+                print!("{}", state)
+            }
+            println!()
+        }
+        println!("------------------")
+    }
 
     //return counter
     Ok(split_count)
