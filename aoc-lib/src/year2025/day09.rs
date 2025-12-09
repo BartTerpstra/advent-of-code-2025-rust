@@ -53,60 +53,10 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
 }
 
 fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
-    // I knew it was too good to be true
-    // a floor is still too expensive
-
-    //sort points by x value
-    //for every matching x value create a line between.
-
-    //sort points by y value
-    //for every matching y value create a line between.
-
-    //nicety: please prefer individual line segments like #1#2# over spans or with spans. because:
-
-    //for every points to every other point not checked, find area
-    //sort descending
-
-    //for every area
-    //bounds check
+    // Rip, you didn't read the prompt right, every point is guarenteed to be connected to at most 2 lines.
+    // the coordinates are in order.
 
 
-    //todo the runtime properties of this would seem pretty dire at first glance, maybe this can be optimised?
-    //the algorithm is probably incorrect because a shape can be cleared by a line of line segments
-    //......
-    //....
-    //.......
-    //.....
-    //.......
-
-    //bounds check is defined as
-    //shoot a ray out from any point of the area, out from the area.
-    //once you hit a line, start bound checking:
-    //move clockwise around the area by following line segments recursively depth first, prefering inner rotation.
-    //if you hit the area, continue, but set_flag only partial solve.
-        //if not entirely cleared, send new beam from pixel circularly after touch
-    //if you exhaust, continue to next candidate area
-    //if you end up at yourself, return area.
-
-    //alternative start
-    //for points, over x then y, draw line segments.
-    //every line segment belongs to a graph.
-    //if a point already had a line, the graphs join.
-    //if a point was already part of the same graph, walk the graph and mark nodes with circle UID.
-    //given this graph, butcher it.
-    //every circle cut into rectangles and lines cut to lines.
-    //(duplicate and overlap allowed if easier to implement. trivial slowdown)
-
-    //for every point to every point
-    //area original outer points
-    //sort descending
-
-    //for area w/points
-    //for every butchered shape
-    //if overlap, clear overlapping pixels, butcher remaining shape into rectangles
-    //for every remaining shape, butcher with remaining butchered shapes.
-    //if any shapes left when out of butchered, reject and move on to next candidate.
-    //alternative end
     Ok(0)
 }
 
