@@ -14,20 +14,42 @@ pub fn solve() -> Result<()> {
     Ok(())
 }
 
+//assert X-y in the standard computer graphics tradition. (origin is top left, y is height, x is width)
+#[derive(Debug)]
+struct Point{
+    x: i64,
+    y: i64
+}
+
+fn area(a:&Point, b: &Point)->u64{
+    let xdiff = (a.x-b.x).abs() as u64;
+    let ydiff = (a.y-b.y).abs() as u64;
+    (xdiff+1)*(ydiff+1)
+}
 fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     //There is no floor neo!
 
-    //file as str
-    //trim
-    //lines
-    //split_once ","
-    //parse
-    //as list of coords
+    let mut points: Vec<Point> = vec![];
 
-    //for every point to every other point not checked
-    //get area between
-    //return MAX
-    Ok(0)
+    let lines = _input.trim().lines();
+    for line in lines {
+        let halves = line.split_once(",").unwrap();
+        points.push(Point{x:halves.0.parse()? ,y:halves.1.parse()?})
+    }
+
+    let mut max = 0;
+    let mut maxpoints = (&Point{x:0,y:0},&Point{x:0,y:0});
+    for index in 0..points.len(){
+        for inner in index..points.len(){
+            let area = area(&points[index], &points[inner]);
+            if area > max {
+                max = area;
+                maxpoints = (&points[index], &points[inner])
+            }
+        }
+    }
+    println!("{:?}",maxpoints);
+    Ok(max)
 }
 
 fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
