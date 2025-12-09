@@ -87,6 +87,26 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
         //if not entirely cleared, send new beam from pixel circularly after touch
     //if you exhaust, continue to next candidate area
     //if you end up at yourself, return area.
+
+    //alternative start
+    //for points, over x then y, draw line segments.
+    //every line segment belongs to a graph.
+    //if a point already had a line, the graphs join.
+    //if a point was already part of the same graph, walk the graph and mark nodes with circle UID.
+    //given this graph, butcher it.
+    //every circle cut into rectangles and lines cut to lines.
+    //(duplicate and overlap allowed if easier to implement. negligeable slowdown)
+
+    //for every point to every point
+    //area original outer points
+    //sort descending
+
+    //for area w/points
+    //for every butchered shape
+    //if overlap, clear overlapping pixels, butcher remaining shape into rectangles
+    //for every remaining shape, butcher with remaining butchered shapes.
+    //if any shapes left when out of butchered, reject and move on to next candidate.
+    //alternative end
     Ok(0)
 }
 
