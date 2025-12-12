@@ -14,8 +14,51 @@ pub fn solve() -> Result<()> {
     Ok(())
 }
 
+struct BinaryValue{
+    values:Vec<bool>,
+    size:u8
+}
+struct Machine{
+    lights:Light,
+    Buttons:Vec<Button>,
+    size:u8
+}
+
+struct Light{
+    value: String,
+    binary: BinaryValue
+}
+
+struct Button{
+    value: String,
+    binary: BinaryValue
+}
+// fn as_light(part: &str) -> Light{
+//
+// }
+// fn as_button(part: &str) -> Button{
+//
+// }
+
+fn as_machines(file:&str)->Vec<Machine>{
+    let result = vec![];
+    let lines = file.trim().lines();
+    for line in lines {
+        let mut words = line.split_whitespace();
+        let lights = words.next().unwrap();
+
+
+    }
+    result
+}
+
+
 fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
-    // TODO: Implement part 1
+
+    let val = BinaryValue{values:vec![], size: 5 };
+    //read and xor values until you have found a working combination.
+    //very nice runtime properties of n+n-1+n-2, etc.
+
     Ok(0)
 }
 
