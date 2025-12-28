@@ -51,7 +51,7 @@ fn as_points(_input:&str) -> Vec<Point>{
     let lines = _input.trim().lines();
     for line in lines {
         let halves = line.split_once(",").unwrap();
-        points.push(Point{x:halves.0.parse()? ,y:halves.1.parse()?})
+        points.push(Point{x:halves.0.parse().unwrap() ,y:halves.1.parse().unwrap()})
     }
 
     points
@@ -59,7 +59,7 @@ fn as_points(_input:&str) -> Vec<Point>{
 
 fn as_closed_graph(points: &Vec<Point>)->ClosedGraph{
     //construct lines and keep track of total rotation, +/- 360 at the end will show handedness
-
+    return ClosedGraph{ lines: vec![], inside_is_left_handed: false }
 }
 fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     //There is no floor neo!
