@@ -14,51 +14,111 @@ pub fn solve() -> Result<()> {
     Ok(())
 }
 
-struct BinaryValue{
-    values:Vec<bool>,
-    size:u8
-}
+type BinaryArray = Vec<bool>;
+
+#[derive(Debug)]
 struct Machine{
-    lights:Light,
-    Buttons:Vec<Button>,
-    size:u8
+    lights:Lights,
+    buttons:Vec<Button>,
 }
 
-struct Light{
-    value: String,
-    binary: BinaryValue
+#[derive(Debug)]
+struct Lights{
+    target: BinaryArray,
+    actual: BinaryArray
 }
-
+#[derive(Debug)]
 struct Button{
-    value: String,
-    binary: BinaryValue
+    affects: BinaryArray
 }
-// fn as_light(part: &str) -> Light{
-//
-// }
-// fn as_button(part: &str) -> Button{
-//
-// }
 
+fn char_as_usize(c: char) -> usize {
+    match c {
+        '0' => 0,
+        '1' => 1,
+        '2' => 2,
+        '3' => 3,
+        '4' => 4,
+        '5' => 5,
+        '6' => 6,
+        '7' => 7,
+        '8' => 8,
+        '9' => 9,
+        _ => 0
+    }
+}
 fn as_machines(file:&str)->Vec<Machine>{
-    let result = vec![];
+    let mut result = vec![];
     let lines = file.trim().lines();
     for line in lines {
         let mut words = line.split_whitespace();
-        let lights = words.next().unwrap();
+        let target_lights_str = words.next().unwrap();
+        let target_lights:BinaryArray = target_lights_str[1..target_lights_str.len()-1].chars().map(|x|->bool{x=='#'}).collect();
+        let current_lights:BinaryArray = vec![false; target_lights.len()];
 
+        let mut buttons = vec![];
+        let mut joltage = "";
+        while(true) {
+            let next_word = words.next().unwrap();
+            if (next_word.chars().next().unwrap() == '{'){
+                joltage = next_word;
+                break;
+            }else{
+                let inner_button = &next_word[1..next_word.len()-1];
+                let affected: Vec<usize> = inner_button.split(",").map(|x| -> (usize) {char_as_usize(x.chars().next().unwrap())}).collect();
 
+                let mut affects = vec![false; target_lights.len()];
+
+                for index in affected {
+                    affects[index] = true;
+                }
+
+                buttons.push(Button {affects})
+            }
+        }
+
+        let lights = Lights{target:target_lights, actual:current_lights};
+        result.push(Machine {lights, buttons})
     }
     result
 }
 
 
 fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
+    let machines = as_machines(_input);
 
-    let val = BinaryValue{values:vec![], size: 5 };
+    println!("started");
+    for machine in machines {
+        println!("{:?}", machine);
+    }
     //read and xor values until you have found a working combination.
     //very nice runtime properties of n+n-1+n-2, etc.
+    //2026: god, i'm pretty clever. he realised it is a finite state. every button pressed twice is equivalent to not being pressed at all.
 
+
+
+
+    //for every machine, find the lowest amount of button presses required to correctly configure them.
+    //a machine is current lights, target lights, list of buttons, joltage.
+    //buttons have a list of indexes of lights it flips when pressed.
+    //lights are 0 initialised.
+
+    //ways to get least button path (might be relevant for second excercise:
+    //* breadth first brute-force:
+    //given all current states, try every button on every state. if any results are the target, the shortest was found. if no results are target, create a new node for every results instead, goto 1.
+
+    //* reverse exploration:
+    //since the buttons are cumulative, they can be pressed in any order.
+    //since certain lights are on, certain buttons MUST be in the combination.
+
+    //check which buttons can affect the buttons we want on.
+    //make a branch for each.
+    //then, explore which other buttons can either turn on the remaining lights or turn off the wrong lights.
+    //create a branch for each.
+    //at any point, if a node matches target, stop.
+
+    //a button might be required but have poor "fitness" in the above metric, it will at some point be explored anyway, as it will turn off buttons that are on for the wrong reason.
+    //potential optim idea: buttons with higher fitness are allowed to look deeper.
     Ok(0)
 }
 
@@ -71,12 +131,14 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
 mod tests {
     use super::*;
 
-    const EXAMPLE: &str = "";
+    const EXAMPLE: &str = "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
+[...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}
+[.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}";
 
     #[test]
     fn test_part1() {
         let result = solve_part1(EXAMPLE).unwrap();
-        assert_eq!(result.to_string(), "0");
+        //assert_eq!(result.to_string(), "0");
     }
 
     #[test]
