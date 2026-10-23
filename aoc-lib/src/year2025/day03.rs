@@ -34,7 +34,7 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
         let mut index_of_highest = 0;
         let mut index_of_second_highest;
         for i in 1..bank.len() - 1 { //last index is not allowed!
-            //assert the following absolute ordering for chars: 0<1<2<3<4<5<6<7<8<9
+            //assert that chars have the following absolute ordering: 0<1<2<3<4<5<6<7<8<9
             if bank[index_of_highest] < bank[i] {
                 index_of_highest = i;
                 //small optim
@@ -48,6 +48,8 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
         for i in index_of_second_highest..bank.len() {
             if bank[index_of_second_highest] < bank[i] {
                 //I know, I know
+                //2026: i think he meant: why leave debug statements in comments like orange rinds in clockwork
+
                 //#[ignore(clippy::mut_range_bound)
                 index_of_second_highest = i;
             }
