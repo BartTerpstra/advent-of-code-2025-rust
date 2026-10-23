@@ -24,7 +24,9 @@ fn as_shopfloor(input: &str) -> Shopfloor {
     let mut results = vec![];
     let mut lines = input.trim().lines().peekable();
     let mut width = lines.peek().unwrap().len();
-    width += 2; // we are adding an edge to the entire shop
+
+    //we are adding an edge to the entire shop while filling
+    width += 2;
     results.push(vec![false; width]); //empty row
     for line in lines {
         let line_chars = line.chars();
