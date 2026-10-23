@@ -60,19 +60,25 @@ fn check_equal_digits(i: u64) -> u64 {
     }
 }
 
+//let digits be half the amount of digits in i.
 fn is_equal_half(i: u64, digits: u64) -> u64 {
     let divisor = 10_u64.pow(digits as u32);
 
     //the following block exploits the fact that integer division rounds down,
     //allowing you to erase digits you push past the comma
+
+    //123456, 3 -> 123
     let first_half = i / divisor;
-    let last_half = i - (i / divisor) * divisor;
+
+    //123456, 3 -> 123*1000 -> 123456-123000 -> 456.
+    let last_half = i - ((i / divisor) * divisor);
     if first_half == last_half {
         return i;
     }
     0
 }
 
+//check if something with 6 digits is only repeating digits (2, 3 or 6 equal groups)
 fn check_six_digits(i: u64) -> u64 {
     //division by 3
     let first = i / 10000;
@@ -85,11 +91,14 @@ fn check_six_digits(i: u64) -> u64 {
     //division by two
     is_equal_half(i, 6 / 2)
 }
+//check if something with 8 digits is only repeating digits (2, 4 or 8 equal groups)
 fn check_eight(i: u64) -> u64 {
     //division by 2 and four
     //all divisions by four also create a division by two
     is_equal_half(i, 8 / 2)
 }
+
+//check if something with 9 digits is only repeating digits (3 or 9 equal groups)
 fn check_nine(i: u64) -> u64 {
     //division by 3
     let first = i / 1000000;
@@ -102,6 +111,8 @@ fn check_nine(i: u64) -> u64 {
 
     0
 }
+
+//check if something with 10 digits has only repeating digits (2 or 5 groups)
 fn check_ten(i: u64) -> u64 {
     // division by five
     let five = i / 100000000; //first two digits
