@@ -16,6 +16,7 @@ pub fn solve() -> Result<()> {
 
 fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     // TODO: Implement part 1
+    //find all paths in a directed graph.
     Ok(0)
 }
 

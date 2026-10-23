@@ -16,6 +16,11 @@ pub fn solve() -> Result<()> {
 
 fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     // TODO: Implement part 1
+    //constraint test:
+    //can x amount of y presents fit in region z.
+    //an efficient solution requires graph theory or tiling theory.
+    //I currently don't know in what way.
+
     Ok(0)
 }
 
