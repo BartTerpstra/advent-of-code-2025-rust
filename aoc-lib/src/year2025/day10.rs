@@ -24,12 +24,23 @@ struct Machine{
 
 #[derive(Debug)]
 struct Lights{
-    target: BinaryArray,
-    actual: BinaryArray
+    target: BinaryArray
 }
 #[derive(Debug)]
 struct Button{
     affects: BinaryArray
+}
+
+fn xor(left:bool, right: bool) -> bool{
+    left == true && right == false || right == true && left == false
+}
+fn xor_array(left: &BinaryArray, right: &BinaryArray) -> BinaryArray{
+    //assert equal length.
+    let mut result = vec![false;left.len()];
+    for i in 0..result.len(){
+        result[i] = xor(left[i], right[i]);
+    }
+    result
 }
 
 fn char_as_usize(c: char) -> usize {
@@ -54,7 +65,6 @@ fn as_machines(file:&str)->Vec<Machine>{
         let mut words = line.split_whitespace();
         let target_lights_str = words.next().unwrap();
         let target_lights:BinaryArray = target_lights_str[1..target_lights_str.len()-1].chars().map(|x|->bool{x=='#'}).collect();
-        let current_lights:BinaryArray = vec![false; target_lights.len()];
 
         let mut buttons = vec![];
         let mut joltage = "";
@@ -77,7 +87,7 @@ fn as_machines(file:&str)->Vec<Machine>{
             }
         }
 
-        let lights = Lights{target:target_lights, actual:current_lights};
+        let lights = Lights{target:target_lights};
         result.push(Machine {lights, buttons})
     }
     result
@@ -85,18 +95,29 @@ fn as_machines(file:&str)->Vec<Machine>{
 
 
 fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
-    let machines = as_machines(_input);
+    let mut machines = as_machines(_input);
 
     println!("started");
-    for machine in machines {
-        println!("{:?}", machine);
-    }
     //read and xor values until you have found a working combination.
     //very nice runtime properties of n+n-1+n-2, etc.
     //2026: god, i'm pretty clever. he realised it is a finite state. every button pressed twice is equivalent to not being pressed at all.
+    //13 buttons is the max, so 2^13 combinations, is 8192.
+
+    //idea: iterate over 0..2^buttons.len().
+    //transform i into binary. every 1 is which buttons to combine.
+    //combine, check against target.
+    //repeat.
+
+    //todo convert to working with binary types instead?
+
+    let mut mostbuttons = 0;
+    for mut machine in machines {
+        if machine.buttons.len() > mostbuttons {
+            mostbuttons = machine.buttons.len();
+        }
 
 
-
+    }
 
     //for every machine, find the lowest amount of button presses required to correctly configure them.
     //a machine is current lights, target lights, list of buttons, joltage.
@@ -119,7 +140,7 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
 
     //a button might be required but have poor "fitness" in the above metric, it will at some point be explored anyway, as it will turn off buttons that are on for the wrong reason.
     //potential optim idea: buttons with higher fitness are allowed to look deeper.
-    Ok(0)
+    Ok(mostbuttons)
 }
 
 fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
