@@ -38,21 +38,25 @@ fn is_left(c: char) -> bool {
 }
 
 fn to_instructions(file: &str) -> (Vec<Instruction>, u16) {
-    let dummy = Instruction {
+    let empty = Instruction {
         is_left: false,
         value: 0,
     };
-    let mut instructions: Vec<Instruction> = vec![dummy; 1000];
+    let mut instructions: Vec<Instruction> = vec![empty; 1000];
     let mut bonus_count: u16 = 0;
     for line in file.trim().lines() {
         //assert len 2-3
         //assert format as (L|R)[0-9]{1,3}
+
         let direction: char = line.chars().next().unwrap();
+
         //assert all values between 0 and 999 < 1024 < u16
         let slice: u16 = line[1..].parse::<u16>().unwrap();
 
-        //the idea is to do division and remainder before we store the data, so we save processing and memory.
+        //we reason that moving more than a hundred is equivalent to moving the remainder, but making sure to add extra "passed zero" count.
+        //this allows us to use less memory and do less work.
         bonus_count += slice / 100; //999/100 <= 9 <= 256
+
         let value: u8 = (slice % 100) as u8; //n%100 <= 100 <= 256
         instructions.push(Instruction {
             is_left: is_left(direction),
@@ -86,6 +90,8 @@ fn solve_part1(instructions: &Vec<Instruction>) -> Result<u32> {
 fn solve_part2(instructions: &Vec<Instruction>) -> Result<u32> {
     let mut machine = new();
     let mut was_zero: bool = false;
+
+    //TODO while this is correct, I feel it could be done more elegantly.
     for instruction in instructions {
         if instruction.is_left {
             machine.position -= instruction.value as i16;
