@@ -1,3 +1,4 @@
+use std::net::UdpSocket;
 use crate::utils;
 use anyhow::Result;
 
@@ -15,6 +16,9 @@ pub fn solve() -> Result<()> {
 }
 
 type BinaryArray = Vec<bool>;
+
+//temp, probs, found by measuring.
+const maxButtons: usize = 13;
 
 #[derive(Debug)]
 struct Machine{
@@ -43,6 +47,8 @@ fn xor_array(left: &BinaryArray, right: &BinaryArray) -> BinaryArray{
     result
 }
 
+//converts character that represents index of light to usize.
+//there are no lightboxes with more than 10 lights.
 fn char_as_usize(c: char) -> usize {
     match c {
         '0' => 0,
@@ -93,7 +99,25 @@ fn as_machines(file:&str)->Vec<Machine>{
     result
 }
 
+fn as_binaryarray(i:u8, noButtons:usize)->BinaryArray{
+    let mut results = vec![false;noButtons];
+    //root is how many digits to place.
+    //the count mod noButtons is where to place them?
+    //well, kind of, but not really.
+    //the sequence is very similar to https://oeis.org/A359941
 
+
+    results
+}
+
+fn as_mod_number(i:u8, modulus:u8, maxDigits:usize) -> Vec<usize>{
+    let mut results =  Vec::with_capacity(maxDigits);
+    let mut index = 0;
+    let mut rem = i % modulus;
+    let mut upnext = i / modulus;
+
+    results
+}
 fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     let mut machines = as_machines(_input);
 
@@ -115,8 +139,6 @@ fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
         if machine.buttons.len() > mostbuttons {
             mostbuttons = machine.buttons.len();
         }
-
-
     }
 
     //for every machine, find the lowest amount of button presses required to correctly configure them.
