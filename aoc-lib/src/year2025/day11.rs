@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, LinkedList};
 use crate::utils;
 use anyhow::Result;
 
@@ -17,7 +17,7 @@ pub fn solve() -> Result<()> {
 
 type Graph<'a> = HashMap<&'a str, Vec<&'a str>>;
 
-fn as_graph<'a>(file: &'a str, head:&str ) -> Graph<'a>{
+fn as_graph<'a>(file: &'a str) -> Graph<'a>{
     let lines = file.trim().lines();
     let mut results:Graph<'a> = HashMap::with_capacity(650);
     for line in lines {
@@ -29,43 +29,103 @@ fn as_graph<'a>(file: &'a str, head:&str ) -> Graph<'a>{
 
         results.insert(name, connected);
     }
-    results.iter().for_each(|x|->(){println!("{},{:?}", x.0,x.1);});
-
     results
 }
 
-fn burrow(graph: &Graph,position:&str, depth: usize, branch_count:usize) -> usize{
+fn burrow(graph: &Graph,position:&str, mut depth: usize, mut branch_count:usize) -> usize{
     if position.eq("out") {return branch_count;}
     if depth > 999{return 0;}
 
-    let newdepth = depth+1;
-    let mut newbranches = branch_count;
-
+    depth +=1;
     let branches = graph.get(position).unwrap();
-    newbranches +=branches.len()-1;
+    branch_count +=branches.len()-1;
     for branch in branches {
-        let val = burrow(graph,branch,newdepth,newbranches);
-        if val > newbranches {
-            newbranches = val;
+        let val = burrow(graph,branch,depth,branch_count);
+        if val > branch_count {
+            branch_count = val;
         }
     }
 
-    newbranches
+    branch_count
+}
+
+fn burrow2(graph: &mut Graph, from:&str, to: &str, mut depth: usize) -> usize{
+    if from.eq(to) {
+        return 1
+    }
+    if from.eq("out"){
+        return 0
+    }
+    if depth >= 999{return 0;}
+
+    let node = graph.get(from);
+    if node == None {return 0;}
+
+
+    depth +=1;
+    let branches = node.unwrap().clone();
+    graph.remove(from);
+    let mut sum = 0;
+
+    for branch in branches {
+        println!("currently at: {}-{}", from, branch);
+
+        let val = burrow2(graph, branch,to,depth);
+        sum+=val;
+    }
+
+    sum
 }
 
 fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
-    // TODO: Implement part 1
     //find all paths in a directed graph.
-    let graph = as_graph(_input, "you");
+    let graph = as_graph(_input);
     let val = burrow(&graph, "you", 0,1);
-
-
     Ok(val)
 }
 
 fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
-    // TODO: Implement part 2
-    Ok(0)
+    //find all paths in a directed graph between srv and out that pass through dac and fft
+    //brute force doesn't work.
+
+    //dac runs to fft, fft probably does not run to dac.
+    //8267 possible paths dac -> fft
+    //svr to dac too large to brute
+    //fft to out too large to brute
+
+    //an option could be to reverse the graph, but that should have similar complexity unless a graph was designed to be faster in reverse.
+    let mother = as_graph(_input);
+    let mut graph1 = mother.clone();
+    let mut graph2 = mother.clone();
+    let mut graph3 = mother.clone();
+    println!("start first");
+    let first = burrow2(&mut graph1, "svr", "fft", 0);
+    println!("start second");
+    let middle = burrow2(&mut graph2, "fft", "dac", 0);
+    println!("start third");
+    let last = burrow2(&mut graph3, "dac", "out", 0);
+
+    let answer1 = first*middle*last;
+
+    let mut graph1 = mother.clone();
+    let mut graph2 = mother.clone();
+    let mut graph3 = mother.clone();
+    let mut graph4 = mother.clone();
+    println!("start first");
+    let first = burrow2(&mut graph1, "fft", "dac", 0);
+    println!("start second");
+    let middle = burrow2(&mut graph2, "dac", "svr", 0);
+    println!("start third");
+    let last = burrow2(&mut graph3, "fft", "svr", 0);
+
+    let last2 = burrow2(&mut graph4, "fft", "out", 0);
+
+    let answer2 = answer1*2*1*1*last2;
+
+    //not 54
+    //not 1944
+    //148806
+    Ok(answer2)
 }
 
 #[cfg(test)]
@@ -83,6 +143,20 @@ ggg: out
 hhh: ccc fff iii
 iii: out";
 
+    const EXAMPLE2: &str = "svr: aaa bbb
+aaa: fft
+fft: ccc
+bbb: tty
+tty: ccc
+ccc: ddd eee
+ddd: hub
+hub: fff
+eee: dac
+dac: fff
+fff: ggg hhh
+ggg: out
+hhh: out";
+
     #[test]
     fn test_part1() {
         let result = solve_part1(EXAMPLE).unwrap();
@@ -91,7 +165,7 @@ iii: out";
 
     #[test]
     fn test_part2() {
-        let result = solve_part2(EXAMPLE).unwrap();
-        assert_eq!(result.to_string(), "0");
+        let result = solve_part2(EXAMPLE2).unwrap();
+        assert_eq!(result.to_string(), "2");
     }
 }
