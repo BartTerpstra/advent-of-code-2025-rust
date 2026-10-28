@@ -77,6 +77,57 @@ fn burrow2(graph: &mut Graph, from:&str, to: &str, mut depth: usize) -> usize{
     sum
 }
 
+#[derive(Debug)]
+struct State{
+    count: usize,
+    found_fft:bool,
+    found_dac:bool,
+}
+fn burrow3<'a>(graph: &HashMap<&'a str, Vec<&'a str>>, found: &mut HashMap<&'a str, State>, position:&str, mut depth: usize, mut branch_count:usize, mut found_fft:bool, mut found_dac:bool,) -> usize{
+    println!("state: {}-{}-{}-{}-{}-{:?}", position, depth, branch_count, found_fft, found_dac,found);
+
+    if position.eq("out") {
+        branch_count+=1;
+        return branch_count;
+    }
+
+    if position.eq("fft"){
+        found_fft = true;
+    }
+    if position.eq("dac"){
+        found_dac = true;
+    }
+
+    // if depth > 999{return 0;}
+    //
+    // depth +=1;
+    let branches = graph.get(position).unwrap();
+    for branch in branches {
+        if found.contains_key(branch){
+            let state =found.get(branch).unwrap();
+            let addition = branch_count.overflowing_add(state.count);
+            if addition.1 {
+                println!("overflowed");
+            }
+            branch_count=addition.0;
+            found_fft = found_fft || state.found_fft;
+            found_dac = found_dac || state.found_dac;
+            continue;
+        }
+
+        let val = burrow3(graph, found, branch,depth,branch_count, found_fft, found_dac);
+        if val > branch_count {
+            branch_count = val;
+        }
+
+        if !(*branch).eq("out") {
+            found.insert(branch, State{count:val, found_fft, found_dac});
+        }
+    }
+
+    branch_count
+}
+
 fn solve_part1(_input: &str) -> Result<impl std::fmt::Display> {
     //find all paths in a directed graph.
     let graph = as_graph(_input);
@@ -95,37 +146,17 @@ fn solve_part2(_input: &str) -> Result<impl std::fmt::Display> {
 
     //an option could be to reverse the graph, but that should have similar complexity unless a graph was designed to be faster in reverse.
     let mother = as_graph(_input);
-    let mut graph1 = mother.clone();
-    let mut graph2 = mother.clone();
-    let mut graph3 = mother.clone();
-    println!("start first");
-    let first = burrow2(&mut graph1, "svr", "fft", 0);
-    println!("start second");
-    let middle = burrow2(&mut graph2, "fft", "dac", 0);
-    println!("start third");
-    let last = burrow2(&mut graph3, "dac", "out", 0);
 
-    let answer1 = first*middle*last;
+    let answer = burrow3(&mother, &mut HashMap::with_capacity(mother.len()), "svr", 0, 0, false, false);
 
-    let mut graph1 = mother.clone();
-    let mut graph2 = mother.clone();
-    let mut graph3 = mother.clone();
-    let mut graph4 = mother.clone();
-    println!("start first");
-    let first = burrow2(&mut graph1, "fft", "dac", 0);
-    println!("start second");
-    let middle = burrow2(&mut graph2, "dac", "svr", 0);
-    println!("start third");
-    let last = burrow2(&mut graph3, "fft", "svr", 0);
 
-    let last2 = burrow2(&mut graph4, "fft", "out", 0);
-
-    let answer2 = answer1*2*1*1*last2;
+    //every loop must be counted once and only once as a new branch
+    //lets retry the original approach with cache
 
     //not 54
     //not 1944
     //148806
-    Ok(answer2)
+    Ok(answer)
 }
 
 #[cfg(test)]
